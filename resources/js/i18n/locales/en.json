@@ -22,6 +22,11 @@
         "actions": "Actions",
         "settings": "Settings"
     },
+    "settings": {
+        "profile": "Profile",
+        "password": "Password",
+        "appearance": "Appearance"
+    },
     "auth": {
         "login": "Login",
         "register": "Register",
@@ -44,7 +49,11 @@
         "overview": "Overview",
         "essentials": "Essential expenses",
         "savings": "Savings",
-        "leisure": "Leisure"
+        "leisure": "Leisure",
+        "recentTransactions": "Recent transactions",
+        "previousMonths": "Previous months",
+        "emptyState": "No data for this month. Start by adding your income.",
+        "viewAll": "View all"
     },
     "income": {
         "title": "Income",
@@ -124,6 +133,23 @@
         "budgetExceeded": "Budget exceeded!",
         "savedSuccessfully": "Saved successfully",
         "confirmDelete": "Are you sure you want to delete?"
+    },
+    "confirm": {
+        "title": "Confirmation",
+        "description": "Are you sure you want to continue?",
+        "deleteTitle": "Delete this item?",
+        "deleteDescription": "This action cannot be undone. The item will be permanently deleted."
+    },
+    "duplicate": {
+        "title": "Duplicate data",
+        "description": "Copy data from another month to this month",
+        "selectMonth": "Select source month",
+        "noSourceData": "No data available in other months",
+        "targetHasData": "This month already has data",
+        "success": "Data duplicated successfully",
+        "button": "Duplicate",
+        "incomeCount": "{{count}} income(s)",
+        "expenseCount": "{{count}} expense(s)"
     },
     "budget": {
         "lock": "Lock",

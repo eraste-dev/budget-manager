@@ -1,5 +1,6 @@
 export { BudgetRuleCard } from './budget-rule-card';
 export { CurrencyInput } from './currency-input';
+export { DuplicateDialog } from './duplicate-dialog';
 export { EnvelopeCard } from './envelope-card';
 export { ExpenseDialog } from './expense-dialog';
 export { ExpenseList } from './expense-list';

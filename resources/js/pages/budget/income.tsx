@@ -1,10 +1,11 @@
-import { IncomeDialog, IncomeList, LockButton, MonthPicker, TotalDisplay } from '@/components/budget';
+import { DuplicateDialog, IncomeDialog, IncomeList, LockButton, MonthPicker, TotalDisplay } from '@/components/budget';
+import { Button } from '@/components/ui/button';
 import { useFab } from '@/contexts/fab-context';
 import AppLayout from '@/layouts/app-layout';
 import { type Income } from '@/types/budget';
 import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
-import { Plus } from 'lucide-react';
+import { Copy, Plus } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,6 +33,7 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
     const { t } = useTranslation();
     const containerRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
     const [incomeToEdit, setIncomeToEdit] = useState<Income | null>(null);
     const fab = useFab();
 
@@ -100,6 +102,20 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
                         </div>
                     )}
 
+                    {/* Bouton dupliquer si mois vide et non verrouillé */}
+                    {incomes.length === 0 && !isLocked && (
+                        <div className="mx-4 mt-4">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => setDuplicateDialogOpen(true)}
+                            >
+                                <Copy className="mr-2 size-4" />
+                                {t('duplicate.button')}
+                            </Button>
+                        </div>
+                    )}
+
                     {/* Liste des entrées */}
                     <div className="px-4 pt-2">
                         <IncomeList incomes={incomes} onEdit={handleEdit} isLocked={isLocked} />
@@ -115,6 +131,13 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
             </div>
 
             <IncomeDialog open={dialogOpen} onOpenChange={setDialogOpen} currentMonth={currentMonth} incomeToEdit={incomeToEdit} />
+            <DuplicateDialog
+                open={duplicateDialogOpen}
+                onOpenChange={setDuplicateDialogOpen}
+                targetMonth={currentMonth}
+                type="income"
+                targetHasData={incomes.length > 0}
+            />
         </AppLayout>
     );
 }

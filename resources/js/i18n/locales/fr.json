@@ -22,6 +22,11 @@
         "actions": "Actions",
         "settings": "Paramètres"
     },
+    "settings": {
+        "profile": "Profil",
+        "password": "Mot de passe",
+        "appearance": "Apparence"
+    },
     "auth": {
         "login": "Connexion",
         "register": "Inscription",
@@ -44,7 +49,11 @@
         "overview": "Vue d'ensemble",
         "essentials": "Dépenses essentielles",
         "savings": "Épargne",
-        "leisure": "Loisirs"
+        "leisure": "Loisirs",
+        "recentTransactions": "Transactions récentes",
+        "previousMonths": "Mois précédents",
+        "emptyState": "Aucune donnée pour ce mois. Commencez par ajouter vos entrées.",
+        "viewAll": "Voir tout"
     },
     "income": {
         "title": "Entrées",
@@ -124,6 +133,23 @@
         "budgetExceeded": "Budget dépassé !",
         "savedSuccessfully": "Enregistré avec succès",
         "confirmDelete": "Êtes-vous sûr de vouloir supprimer ?"
+    },
+    "confirm": {
+        "title": "Confirmation",
+        "description": "Êtes-vous sûr de vouloir continuer ?",
+        "deleteTitle": "Supprimer cet élément ?",
+        "deleteDescription": "Cette action est irréversible. L'élément sera définitivement supprimé."
+    },
+    "duplicate": {
+        "title": "Dupliquer les données",
+        "description": "Copier les données d'un autre mois vers ce mois",
+        "selectMonth": "Sélectionner le mois source",
+        "noSourceData": "Aucune donnée disponible dans les autres mois",
+        "targetHasData": "Ce mois contient déjà des données",
+        "success": "Données dupliquées avec succès",
+        "button": "Dupliquer",
+        "incomeCount": "{{count}} entrée(s)",
+        "expenseCount": "{{count}} sortie(s)"
     },
     "budget": {
         "lock": "Verrouiller",

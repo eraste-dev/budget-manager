@@ -4,6 +4,7 @@ use App\Http\Controllers\Budget\ExpenseCategoryController;
 use App\Http\Controllers\Budget\ExpenseController;
 use App\Http\Controllers\Budget\IncomeController;
 use App\Http\Controllers\Budget\MonthLockController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -15,21 +16,23 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Income routes
     Route::get('budget/income', [IncomeController::class, 'index'])->name('budget.income');
     Route::post('budget/income', [IncomeController::class, 'store'])->name('budget.income.store');
     Route::put('budget/income/{income}', [IncomeController::class, 'update'])->name('budget.income.update');
     Route::delete('budget/income/{income}', [IncomeController::class, 'destroy'])->name('budget.income.destroy');
+    Route::get('budget/income/available-months', [IncomeController::class, 'availableMonths'])->name('budget.income.available-months');
+    Route::post('budget/income/duplicate', [IncomeController::class, 'duplicate'])->name('budget.income.duplicate');
 
     // Expense routes
     Route::get('budget/expenses', [ExpenseController::class, 'index'])->name('budget.expenses');
     Route::post('budget/expenses', [ExpenseController::class, 'store'])->name('budget.expenses.store');
     Route::put('budget/expenses/{expense}', [ExpenseController::class, 'update'])->name('budget.expenses.update');
     Route::delete('budget/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('budget.expenses.destroy');
+    Route::get('budget/expenses/available-months', [ExpenseController::class, 'availableMonths'])->name('budget.expenses.available-months');
+    Route::post('budget/expenses/duplicate', [ExpenseController::class, 'duplicate'])->name('budget.expenses.duplicate');
 
     // Expense category routes
     Route::post('budget/expense-categories', [ExpenseCategoryController::class, 'store'])->name('budget.expense-categories.store');

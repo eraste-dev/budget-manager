@@ -1,7 +1,9 @@
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { cn } from '@/lib/utils';
 import { type Expense, type ExpenseCategory } from '@/types/budget';
 import { router } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -55,14 +57,24 @@ export function ExpenseList({
     className,
 }: ExpenseListProps) {
     const { t } = useTranslation();
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null);
 
     /**
-     * Handles the deletion of an expense entry.
+     * Opens the delete confirmation dialog.
      */
-    const handleDelete = (expense: Expense) => {
+    const handleDeleteClick = (expense: Expense) => {
         if (isLocked) return;
-        if (confirm(t('alerts.confirmDelete'))) {
-            router.delete(`/budget/expenses/${expense.id}`);
+        setExpenseToDelete(expense);
+        setDeleteDialogOpen(true);
+    };
+
+    /**
+     * Handles the actual deletion of an expense entry.
+     */
+    const handleConfirmDelete = () => {
+        if (expenseToDelete) {
+            router.delete(`/budget/expenses/${expenseToDelete.id}`);
         }
     };
 
@@ -158,7 +170,7 @@ export function ExpenseList({
                                                 <Pencil className="size-3.5" />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(expense)}
+                                                onClick={() => handleDeleteClick(expense)}
                                                 className="text-destructive hover:bg-destructive/10 active:bg-destructive/20 rounded-full p-2 transition-colors"
                                                 aria-label={t('common.delete')}
                                             >
@@ -172,6 +184,13 @@ export function ExpenseList({
                     </div>
                 );
             })}
+
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                onConfirm={handleConfirmDelete}
+                variant="destructive"
+            />
         </div>
     );
 }

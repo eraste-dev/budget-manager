@@ -1,11 +1,12 @@
-import { BudgetRuleCard, ExpenseDialog, ExpenseList, LockButton, MonthPicker } from '@/components/budget';
+import { BudgetRuleCard, DuplicateDialog, ExpenseDialog, ExpenseList, LockButton, MonthPicker } from '@/components/budget';
+import { Button } from '@/components/ui/button';
 import { useFab } from '@/contexts/fab-context';
 import { cn } from '@/lib/utils';
 import AppLayout from '@/layouts/app-layout';
 import { type Expense, type ExpenseCategory, type TotalsByCategory } from '@/types/budget';
 import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
-import { Plus } from 'lucide-react';
+import { Copy, Plus } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,6 +52,7 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
     const { t } = useTranslation();
     const containerRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
     const [expenseToEdit, setExpenseToEdit] = useState<Expense | null>(null);
     const fab = useFab();
 
@@ -119,6 +121,20 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
                         </div>
                     )}
 
+                    {/* Bouton dupliquer si mois vide et non verrouillé */}
+                    {expenses.length === 0 && !isLocked && (
+                        <div className="mx-4 mt-4">
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => setDuplicateDialogOpen(true)}
+                            >
+                                <Copy className="mr-2 size-4" />
+                                {t('duplicate.button')}
+                            </Button>
+                        </div>
+                    )}
+
                     {/* Expense list */}
                     <div className="px-4 pt-4">
                         <ExpenseList expenses={expenses} categories={categories} totalIncome={totalIncome} onEdit={handleEdit} isLocked={isLocked} />
@@ -168,6 +184,13 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
             </div>
 
             <ExpenseDialog open={dialogOpen} onOpenChange={setDialogOpen} currentMonth={currentMonth} categories={categories} expenseToEdit={expenseToEdit} />
+            <DuplicateDialog
+                open={duplicateDialogOpen}
+                onOpenChange={setDuplicateDialogOpen}
+                targetMonth={currentMonth}
+                type="expense"
+                targetHasData={expenses.length > 0}
+            />
         </AppLayout>
     );
 }

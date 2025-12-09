@@ -1,7 +1,9 @@
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { cn } from '@/lib/utils';
 import { type Income } from '@/types/budget';
 import { router } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -39,14 +41,24 @@ const formatCurrency = (amount: number | string): string => {
  */
 export function IncomeList({ incomes, onEdit, isLocked = false, className }: IncomeListProps) {
     const { t } = useTranslation();
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [incomeToDelete, setIncomeToDelete] = useState<Income | null>(null);
 
     /**
-     * Handles the deletion of an income entry.
+     * Opens the delete confirmation dialog.
      */
-    const handleDelete = (income: Income) => {
+    const handleDeleteClick = (income: Income) => {
         if (isLocked) return;
-        if (confirm(t('alerts.confirmDelete'))) {
-            router.delete(`/budget/income/${income.id}`);
+        setIncomeToDelete(income);
+        setDeleteDialogOpen(true);
+    };
+
+    /**
+     * Handles the actual deletion of an income entry.
+     */
+    const handleConfirmDelete = () => {
+        if (incomeToDelete) {
+            router.delete(`/budget/income/${incomeToDelete.id}`);
         }
     };
 
@@ -89,7 +101,7 @@ export function IncomeList({ incomes, onEdit, isLocked = false, className }: Inc
                                 <Pencil className="size-4" />
                             </button>
                             <button
-                                onClick={() => handleDelete(income)}
+                                onClick={() => handleDeleteClick(income)}
                                 className="text-destructive hover:bg-destructive/10 active:bg-destructive/20 rounded-full p-2.5 transition-colors"
                                 aria-label={t('common.delete')}
                             >
@@ -99,6 +111,13 @@ export function IncomeList({ incomes, onEdit, isLocked = false, className }: Inc
                     )}
                 </div>
             ))}
+
+            <ConfirmDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                onConfirm={handleConfirmDelete}
+                variant="destructive"
+            />
         </div>
     );
 }

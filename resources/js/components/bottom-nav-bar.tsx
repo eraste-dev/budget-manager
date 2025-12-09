@@ -138,7 +138,7 @@ export function BottomNavBar() {
                     {leftNavItems.map(renderNavItem)}
 
                     {/* Spacer for FAB */}
-                    <div className="w-14" />
+                    {/* <div className="w-14" /> */}
 
                     {/* Right nav items */}
                     {rightNavItems.map(renderNavItem)}

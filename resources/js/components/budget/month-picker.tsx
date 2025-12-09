@@ -58,6 +58,7 @@ export function MonthPicker({ value, routeName = 'budget.income', className }: M
      */
     const getRoutePath = (): string => {
         const routes: Record<string, string> = {
+            'dashboard': '/dashboard',
             'budget.income': '/budget/income',
             'budget.expenses': '/budget/expenses',
         };
