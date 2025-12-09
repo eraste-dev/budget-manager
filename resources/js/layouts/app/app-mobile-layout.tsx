@@ -1,22 +1,13 @@
 import { BottomNavBar } from '@/components/bottom-nav-bar';
 import { FabProvider } from '@/contexts/fab-context';
-import { type ReactNode } from 'react';
+import { type PropsWithChildren } from 'react';
 
 /**
- * Props for the AppLayout component.
- */
-interface AppLayoutProps {
-    /** Page content */
-    children: ReactNode;
-}
-
-/**
- * App layout with bottom navigation bar.
+ * Mobile-first app layout with bottom navigation bar.
  *
- * Uses a Flutter-style bottom navigation with central FAB button.
- * Works on both mobile and desktop.
+ * Uses FabProvider to allow pages to customize the central FAB button.
  */
-export default function AppLayout({ children }: AppLayoutProps) {
+export default function AppMobileLayout({ children }: PropsWithChildren) {
     return (
         <FabProvider>
             <div className="flex min-h-svh flex-col bg-background">

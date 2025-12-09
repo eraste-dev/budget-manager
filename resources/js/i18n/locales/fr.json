@@ -19,7 +19,8 @@
         "total": "Total",
         "month": "Mois",
         "year": "Année",
-        "actions": "Actions"
+        "actions": "Actions",
+        "settings": "Paramètres"
     },
     "auth": {
         "login": "Connexion",

@@ -1,16 +1,16 @@
 import {
-    FloatingActionButton,
     IncomeDialog,
     IncomeList,
     LockButton,
     MonthPicker,
     TotalDisplay,
 } from '@/components/budget';
+import { useFab } from '@/contexts/fab-context';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { type Income } from '@/types/budget';
 import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
+import { Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -39,11 +39,32 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
     const containerRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [incomeToEdit, setIncomeToEdit] = useState<Income | null>(null);
+    const fab = useFab();
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('dashboard.title'), href: '/dashboard' },
-        { title: t('income.title'), href: '/budget/income' },
-    ];
+    /**
+     * Opens the dialog to add a new income entry.
+     */
+    const handleAddClick = () => {
+        if (isLocked) return;
+        setIncomeToEdit(null);
+        setDialogOpen(true);
+    };
+
+    /**
+     * Configure FAB on mount/update for mobile bottom nav.
+     */
+    useEffect(() => {
+        if (!fab) return;
+
+        fab.setConfig({
+            onClick: handleAddClick,
+            icon: <Plus className="size-6" />,
+            visible: !isLocked,
+            label: t('income.addIncome'),
+        });
+
+        return () => fab.resetConfig();
+    }, [isLocked, t]);
 
     /**
      * Animate container on mount.
@@ -59,15 +80,6 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
     }, []);
 
     /**
-     * Opens the dialog to add a new income entry.
-     */
-    const handleAddClick = () => {
-        if (isLocked) return;
-        setIncomeToEdit(null);
-        setDialogOpen(true);
-    };
-
-    /**
      * Opens the dialog to edit an existing income entry.
      */
     const handleEdit = (income: Income) => {
@@ -77,10 +89,10 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title={t('income.title')} />
 
-            <div className="flex flex-1 flex-col pb-24">
+            <div className="flex flex-1 flex-col pb-20 md:pb-6">
                 <div ref={containerRef} className="mx-auto w-full max-w-2xl">
                     {/* Header sticky avec navigation mois + lock */}
                     <div className="sticky top-0 z-10 border-b bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -111,7 +123,7 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
 
                     {/* Total sticky en bas */}
                     {incomes.length > 0 && (
-                        <div className="sticky bottom-20 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                        <div className="sticky bottom-24 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur md:bottom-6 supports-[backdrop-filter]:bg-background/60">
                             <TotalDisplay
                                 label={t('income.totalIncome')}
                                 amount={total}
@@ -121,13 +133,6 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
                     )}
                 </div>
             </div>
-
-            {!isLocked && (
-                <FloatingActionButton
-                    onClick={handleAddClick}
-                    aria-label={t('income.addIncome')}
-                />
-            )}
 
             <IncomeDialog
                 open={dialogOpen}
