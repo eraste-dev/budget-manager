@@ -1,0 +1,109 @@
+{
+    "common": {
+        "appName": "Budget Manager",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "add": "Ajouter",
+        "back": "Retour",
+        "next": "Suivant",
+        "previous": "Précédent",
+        "loading": "Chargement...",
+        "error": "Erreur",
+        "success": "Succès",
+        "confirm": "Confirmer",
+        "close": "Fermer",
+        "search": "Rechercher",
+        "noData": "Aucune donnée",
+        "total": "Total",
+        "month": "Mois",
+        "year": "Année"
+    },
+    "auth": {
+        "login": "Connexion",
+        "register": "Inscription",
+        "logout": "Déconnexion",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "forgotPassword": "Mot de passe oublié ?",
+        "resetPassword": "Réinitialiser le mot de passe",
+        "rememberMe": "Se souvenir de moi",
+        "name": "Nom",
+        "alreadyHaveAccount": "Vous avez déjà un compte ?",
+        "dontHaveAccount": "Vous n'avez pas de compte ?",
+        "sendResetLink": "Envoyer le lien de réinitialisation"
+    },
+    "dashboard": {
+        "title": "Tableau de bord",
+        "monthBalance": "Solde du mois",
+        "configureMonth": "Configurer le mois",
+        "overview": "Vue d'ensemble",
+        "essentials": "Dépenses essentielles",
+        "savings": "Épargne",
+        "leisure": "Loisirs"
+    },
+    "income": {
+        "title": "Entrées",
+        "salary": "Salaire",
+        "otherIncome": "Autres revenus",
+        "totalIncome": "Total des entrées",
+        "envelopes": "Enveloppes calculées"
+    },
+    "expenses": {
+        "title": "Dépenses",
+        "essentials": {
+            "title": "Dépenses essentielles",
+            "subtitle": "50% du budget",
+            "rent": "Loyer",
+            "utilities": "Électricité / Gaz / Eau / Pressing",
+            "internet": "Internet",
+            "transport": "Transport",
+            "food": "Alimentation",
+            "home": "Besoins maison"
+        },
+        "savings": {
+            "title": "Épargne & Investissements",
+            "subtitle": "30% du budget",
+            "wedding": "Épargne mariage",
+            "nsia": "Épargne NSIA",
+            "longTerm": "Épargne long terme (10 ans)",
+            "health": "Santé & imprévus",
+            "family": "Famille / Aide",
+            "projects": "Projets divers"
+        },
+        "leisure": {
+            "title": "Loisirs & Flexibles",
+            "subtitle": "20% du budget",
+            "outings": "Restaurants / Sorties",
+            "clothing": "Vêtements",
+            "misc": "Achats divers",
+            "flex": "Réserve flex"
+        },
+        "comparison": "Comparaison avec le budget",
+        "overBudget": "Dépassement du budget",
+        "underBudget": "Sous le budget",
+        "remaining": "Restant"
+    },
+    "summary": {
+        "title": "Résumé mensuel",
+        "totalIncome": "Revenus totaux",
+        "totalExpenses": "Dépenses totales",
+        "balance": "Solde",
+        "percentUsed": "% utilisé",
+        "saveMonth": "Enregistrer le mois",
+        "exportJson": "Exporter en JSON"
+    },
+    "history": {
+        "title": "Historique",
+        "previousMonths": "Mois précédents",
+        "compare": "Comparer",
+        "noHistory": "Aucun historique disponible"
+    },
+    "alerts": {
+        "budgetExceeded": "Budget dépassé !",
+        "savedSuccessfully": "Enregistré avec succès",
+        "confirmDelete": "Êtes-vous sûr de vouloir supprimer ?"
+    }
+}

@@ -1,0 +1,109 @@
+{
+    "common": {
+        "appName": "Budget Manager",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "back": "Back",
+        "next": "Next",
+        "previous": "Previous",
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "confirm": "Confirm",
+        "close": "Close",
+        "search": "Search",
+        "noData": "No data",
+        "total": "Total",
+        "month": "Month",
+        "year": "Year"
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "email": "Email address",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "forgotPassword": "Forgot password?",
+        "resetPassword": "Reset password",
+        "rememberMe": "Remember me",
+        "name": "Name",
+        "alreadyHaveAccount": "Already have an account?",
+        "dontHaveAccount": "Don't have an account?",
+        "sendResetLink": "Send reset link"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "monthBalance": "Month balance",
+        "configureMonth": "Configure month",
+        "overview": "Overview",
+        "essentials": "Essential expenses",
+        "savings": "Savings",
+        "leisure": "Leisure"
+    },
+    "income": {
+        "title": "Income",
+        "salary": "Salary",
+        "otherIncome": "Other income",
+        "totalIncome": "Total income",
+        "envelopes": "Calculated envelopes"
+    },
+    "expenses": {
+        "title": "Expenses",
+        "essentials": {
+            "title": "Essential expenses",
+            "subtitle": "50% of budget",
+            "rent": "Rent",
+            "utilities": "Electricity / Gas / Water / Laundry",
+            "internet": "Internet",
+            "transport": "Transport",
+            "food": "Food",
+            "home": "Home needs"
+        },
+        "savings": {
+            "title": "Savings & Investments",
+            "subtitle": "30% of budget",
+            "wedding": "Wedding savings",
+            "nsia": "NSIA savings",
+            "longTerm": "Long-term savings (10 years)",
+            "health": "Health & emergencies",
+            "family": "Family / Support",
+            "projects": "Various projects"
+        },
+        "leisure": {
+            "title": "Leisure & Flexible",
+            "subtitle": "20% of budget",
+            "outings": "Restaurants / Outings",
+            "clothing": "Clothing",
+            "misc": "Miscellaneous purchases",
+            "flex": "Flex reserve"
+        },
+        "comparison": "Budget comparison",
+        "overBudget": "Over budget",
+        "underBudget": "Under budget",
+        "remaining": "Remaining"
+    },
+    "summary": {
+        "title": "Monthly summary",
+        "totalIncome": "Total income",
+        "totalExpenses": "Total expenses",
+        "balance": "Balance",
+        "percentUsed": "% used",
+        "saveMonth": "Save month",
+        "exportJson": "Export to JSON"
+    },
+    "history": {
+        "title": "History",
+        "previousMonths": "Previous months",
+        "compare": "Compare",
+        "noHistory": "No history available"
+    },
+    "alerts": {
+        "budgetExceeded": "Budget exceeded!",
+        "savedSuccessfully": "Saved successfully",
+        "confirmDelete": "Are you sure you want to delete?"
+    }
+}
