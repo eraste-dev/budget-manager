@@ -1,0 +1,75 @@
+# Development docker-compose - Use this for local development with hot reload
+# Usage: docker compose -f docker-compose.dev.yml up -d
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: budget-manager-mysql-dev
+    restart: unless-stopped
+    ports:
+      - "33069:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_secret}
+      - MYSQL_DATABASE=${DB_DATABASE:-budget_manager}
+      - MYSQL_USER=${DB_USERNAME:-budget_user}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-secret_password}
+    volumes:
+      - mysql-data-dev:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - budget-network-dev
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root_secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=caching_sha2_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: budget-manager-phpmyadmin-dev
+    restart: unless-stopped
+    ports:
+      - "8891:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_secret}
+      - UPLOAD_LIMIT=64M
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - budget-network-dev
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: budget-manager-redis-dev
+    restart: unless-stopped
+    ports:
+      - "63799:6379"
+    volumes:
+      - redis-data-dev:/data
+    networks:
+      - budget-network-dev
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes
+
+networks:
+  budget-network-dev:
+    driver: bridge
+
+volumes:
+  mysql-data-dev:
+    driver: local
+  redis-data-dev:
+    driver: local
