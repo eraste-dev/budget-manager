@@ -46,7 +46,7 @@ export function ExpenseSummaryCard({
     return (
         <div
             className={cn(
-                'sticky bottom-36 mx-4 mt-4 overflow-hidden rounded-xl border bg-background/95 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bottom-6',
+                'mx-4 mt-4 overflow-hidden rounded-xl border bg-background/95 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/60',
                 className
             )}
         >

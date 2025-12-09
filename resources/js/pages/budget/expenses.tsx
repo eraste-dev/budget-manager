@@ -7,7 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type Expense, type ExpenseCategory, type TotalsByCategory } from '@/types/budget';
 import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
-import { Copy, Plus } from 'lucide-react';
+import { Banknote, Copy, Plus } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -105,79 +105,76 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
     return (
         <AppLayout>
             <Head title={t('expense.title')} />
-
-            <div className="flex flex-1 flex-col pb-20 md:pb-6">
-                <div ref={containerRef} className="mx-auto w-full max-w-2xl">
-                    {/* Header sticky with month navigation + lock */}
-                    <div className="sticky top-0 z-10 border-b bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                        <div className="flex items-center justify-between">
-                            <MonthPicker value={currentMonth} routeName="budget.expenses" />
-                            <LockButton isLocked={isLocked} month={currentMonth} />
+            <section className="h-[70vh] overflow-y-scroll">
+                <div className="flex flex-1 flex-col pb-20 md:pb-6">
+                    <div ref={containerRef} className="mx-auto w-full max-w-2xl">
+                        {/* Header sticky with month navigation + lock */}
+                        <div className="border-b bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                            <div className="flex items-center justify-between">
+                                <MonthPicker value={currentMonth} routeName="budget.expenses" />
+                                <div className="flex items-center gap-2">
+                                    {!isLocked && expenses.some((e) => (e.remaining_amount ?? parseFloat(e.amount)) > 0) && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                const expensesWithRemaining = expenses
+                                                    .filter((e) => (e.remaining_amount ?? parseFloat(e.amount)) > 0)
+                                                    .map((e) => e.id);
+                                                handleWithdraw(expensesWithRemaining);
+                                            }}
+                                            className="gap-1.5"
+                                        >
+                                            <Banknote className="size-4" />
+                                            <span className="hidden sm:inline">{t('withdrawal.withdraw')}</span>
+                                        </Button>
+                                    )}
+                                    <LockButton isLocked={isLocked} month={currentMonth} />
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Lock alert */}
-                    {isLocked && (
-                        <div className="mx-4 mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
-                            {t('budget.monthLockedDescription')}
-                        </div>
-                    )}
+                        {/* Lock alert */}
+                        {isLocked && (
+                            <div className="mx-4 mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                                {t('budget.monthLockedDescription')}
+                            </div>
+                        )}
 
-                    {/* Bouton dupliquer si mois vide et non verrouillé */}
-                    {expenses.length === 0 && !isLocked && (
-                        <div className="mx-4 mt-4">
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                onClick={() => setDuplicateDialogOpen(true)}
-                            >
-                                <Copy className="mr-2 size-4" />
-                                {t('duplicate.button')}
-                            </Button>
-                        </div>
-                    )}
+                        {/* Bouton dupliquer si mois vide et non verrouillé */}
+                        {expenses.length === 0 && !isLocked && (
+                            <div className="mx-4 mt-4">
+                                <Button variant="outline" className="w-full" onClick={() => setDuplicateDialogOpen(true)}>
+                                    <Copy className="mr-2 size-4" />
+                                    {t('duplicate.button')}
+                                </Button>
+                            </div>
+                        )}
 
-                    {/* Expense list */}
-                    <div className="px-4 pt-4">
-                        <ExpenseList expenses={expenses} categories={categories} totalIncome={totalIncome} onEdit={handleEdit} onWithdraw={handleWithdraw} isLocked={isLocked} />
-                    </div>
-
-                    {/* Budget rule 50/30/20 analysis */}
-                    {totalIncome > 0 && (
+                        {/* Expense list */}
                         <div className="px-4 pt-4">
-                            <BudgetRuleCard expenses={expenses} categories={categories} totalIncome={totalIncome} />
+                            <ExpenseList expenses={expenses} categories={categories} totalIncome={totalIncome} onEdit={handleEdit} onWithdraw={handleWithdraw} isLocked={isLocked} />
                         </div>
-                    )}
 
-                    {/* Spacer to prevent content from being hidden by sticky summary and FAB */}
-                    <div className="h-48 md:h-24" />
+                        {/* Budget rule 50/30/20 analysis */}
+                        {totalIncome > 0 && (
+                            <div className="px-4 pt-4">
+                                <BudgetRuleCard expenses={expenses} categories={categories} totalIncome={totalIncome} />
+                            </div>
+                        )}
 
-                    {/* Sticky summary at bottom - positioned above FAB */}
-                    {(expenses.length > 0 || totalIncome > 0) && (
-                        <ExpenseSummaryCard
-                            totalIncome={totalIncome}
-                            totalExpenses={total}
-                            totalWithdrawn={totalWithdrawn}
-                        />
-                    )}
+                        {/* Spacer to prevent content from being hidden by sticky summary and FAB */}
+                        <div className="h-48 md:h-24" />
+
+                        {/* Sticky summary at bottom - positioned above FAB */}
+                        {(expenses.length > 0 || totalIncome > 0) && <ExpenseSummaryCard totalIncome={totalIncome} totalExpenses={total} totalWithdrawn={totalWithdrawn} />}
+                    </div>
                 </div>
-            </div>
+            </section>
 
             <ExpenseDialog open={dialogOpen} onOpenChange={setDialogOpen} currentMonth={currentMonth} categories={categories} expenseToEdit={expenseToEdit} />
-            <DuplicateDialog
-                open={duplicateDialogOpen}
-                onOpenChange={setDuplicateDialogOpen}
-                targetMonth={currentMonth}
-                type="expense"
-                targetHasData={expenses.length > 0}
-            />
-            <WithdrawalDialog
-                open={withdrawalDialogOpen}
-                onOpenChange={setWithdrawalDialogOpen}
-                expenses={expenses}
-                selectedExpenseIds={selectedExpenseIds}
-                isLocked={isLocked}
-            />
+            <DuplicateDialog open={duplicateDialogOpen} onOpenChange={setDuplicateDialogOpen} targetMonth={currentMonth} type="expense" targetHasData={expenses.length > 0} />
+            <WithdrawalDialog open={withdrawalDialogOpen} onOpenChange={setWithdrawalDialogOpen} expenses={expenses} selectedExpenseIds={selectedExpenseIds} isLocked={isLocked} />
         </AppLayout>
     );
 }
