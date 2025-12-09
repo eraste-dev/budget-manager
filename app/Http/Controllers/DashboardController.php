@@ -109,6 +109,20 @@ class DashboardController extends Controller
             }
         }
 
+        // Get yearly data for bar chart (all 12 months of current year)
+        $year = substr($month, 0, 4);
+        $yearlyData = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthKey = sprintf('%s-%02d', $year, $m);
+            $monthIncome = Income::where('user_id', $userId)->where('month', $monthKey)->sum('amount');
+            $monthExpense = Expense::where('user_id', $userId)->where('month', $monthKey)->sum('amount');
+            $yearlyData[] = [
+                'month' => $monthKey,
+                'income' => (float) $monthIncome,
+                'expenses' => (float) $monthExpense,
+            ];
+        }
+
         return Inertia::render('dashboard', [
             'currentMonth' => $month,
             'totalIncome' => $totalIncome,
@@ -125,6 +139,8 @@ class DashboardController extends Controller
             'recentTransactions' => $recentTransactions,
             'isLocked' => $isLocked,
             'previousMonths' => $previousMonths,
+            'yearlyData' => $yearlyData,
+            'year' => (int) $year,
         ]);
     }
 }

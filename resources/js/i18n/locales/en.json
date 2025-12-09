@@ -53,7 +53,8 @@
         "recentTransactions": "Recent transactions",
         "previousMonths": "Previous months",
         "emptyState": "No data for this month. Start by adding your income.",
-        "viewAll": "View all"
+        "viewAll": "View all",
+        "yearlyOverview": "Yearly overview"
     },
     "income": {
         "title": "Income",

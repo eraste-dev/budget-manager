@@ -1,10 +1,5 @@
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useFab } from '@/contexts/fab-context';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
 import { CreditCard, LayoutGrid, Plus, Settings, Wallet } from 'lucide-react';
@@ -90,19 +85,15 @@ export function BottomNavBar() {
                     <Link
                         href={item.href}
                         className={cn(
-                            'flex items-center justify-center p-3 transition-all duration-200 rounded-xl',
-                            active
-                                ? 'text-primary bg-primary/10'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                            'flex items-center justify-center rounded-xl p-3 transition-all duration-200',
+                            active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground',
                         )}
                         aria-label={label}
                     >
                         <Icon className={cn('size-6', active && 'size-[26px]')} />
                     </Link>
                 </TooltipTrigger>
-                <TooltipContent side="top">
-                    {label}
-                </TooltipContent>
+                <TooltipContent side="top">{label}</TooltipContent>
             </Tooltip>
         );
     };
@@ -117,22 +108,18 @@ export function BottomNavBar() {
                     <TooltipTrigger asChild>
                         <button
                             onClick={config.onClick}
-                            className="fixed bottom-20 left-1/2 z-[60] -translate-x-1/2 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-all duration-300 hover:bg-primary/90 hover:scale-105 hover:shadow-2xl active:scale-95"
+                            className="fixed bottom-20 left-1/2 z-[60] flex size-14 -translate-x-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-all duration-300 hover:scale-105 hover:bg-primary/90 hover:shadow-2xl active:scale-95"
                             aria-label={config.label}
                         >
-                            <div className="transition-transform duration-200">
-                                {config.icon || <Plus className="size-7" strokeWidth={2.5} />}
-                            </div>
+                            <div className="transition-transform duration-200">{config.icon || <Plus className="size-7" strokeWidth={2.5} />}</div>
                         </button>
                     </TooltipTrigger>
-                    <TooltipContent side="top">
-                        {config.label}
-                    </TooltipContent>
+                    <TooltipContent side="top">{config.label}</TooltipContent>
                 </Tooltip>
             )}
 
             {/* Bottom Navigation Bar */}
-            <nav className="fixed inset-x-0 bottom-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border/40">
+            <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl">
                 <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4">
                     {/* Left nav items */}
                     {leftNavItems.map(renderNavItem)}

@@ -53,7 +53,8 @@
         "recentTransactions": "Transactions récentes",
         "previousMonths": "Mois précédents",
         "emptyState": "Aucune donnée pour ce mois. Commencez par ajouter vos entrées.",
-        "viewAll": "Voir tout"
+        "viewAll": "Voir tout",
+        "yearlyOverview": "Aperçu annuel"
     },
     "income": {
         "title": "Entrées",
