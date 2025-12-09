@@ -154,3 +154,9 @@
         @apply bg-background text-foreground;
     }
 }
+
+
+button,
+a {
+    cursor: pointer;
+}

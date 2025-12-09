@@ -16,6 +16,8 @@ export interface Income {
     month: string;
     /** Label describing the income source (e.g., "Salaire", "Freelance") */
     label: string;
+    /** Optional description for additional details */
+    description: string | null;
     /** Amount of the income in the local currency */
     amount: string;
     /** Creation timestamp */
@@ -32,6 +34,8 @@ export interface IncomeFormData {
     month: string;
     /** Label describing the income source */
     label: string;
+    /** Optional description for additional details */
+    description: string;
     /** Amount of the income */
     amount: string;
 }

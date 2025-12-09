@@ -20,7 +20,10 @@
         "month": "Mois",
         "year": "Année",
         "actions": "Actions",
-        "settings": "Paramètres"
+        "settings": "Paramètres",
+        "description": "Description",
+        "descriptionPlaceholder": "Détails supplémentaires...",
+        "optional": "optionnel"
     },
     "settings": {
         "profile": "Profil",

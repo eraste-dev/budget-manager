@@ -68,43 +68,56 @@ export function NavHeader() {
     }
 
     return (
-        <header className="border-b bg-background">
+        <header aria-label={t('navigation.header')} className="sticky top-0 z-20 border-border/40 bg-background/60 shadow-sm backdrop-blur-sm" data-gsap="fade-down">
             <div className="mx-auto max-w-2xl px-4 py-3">
-                {/* Breadcrumb */}
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink asChild>
-                                <Link href="/dashboard" className="flex items-center gap-1">
-                                    <Home className="size-3.5" />
-                                    <span className="sr-only">{t('dashboard.title')}</span>
-                                </Link>
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-
-                        {breadcrumbTrail.map((route, index) => {
-                            const isLast = index === breadcrumbTrail.length - 1;
-
-                            return (
-                                <span key={route.path} className="contents">
-                                    <BreadcrumbSeparator />
-                                    <BreadcrumbItem>
-                                        {isLast ? (
-                                            <BreadcrumbPage>{t(route.titleKey)}</BreadcrumbPage>
-                                        ) : (
-                                            <BreadcrumbLink asChild>
-                                                <Link href={route.path}>{t(route.titleKey)}</Link>
-                                            </BreadcrumbLink>
-                                        )}
-                                    </BreadcrumbItem>
-                                </span>
-                            );
-                        })}
-                    </BreadcrumbList>
-                </Breadcrumb>
-
                 {/* Page title */}
-                <h1 className="mt-1 text-lg font-semibold">{pageTitle}</h1>
+                <h1 className="mt-2 text-base leading-tight font-semibold text-foreground/95" data-gsap="fade-up">
+                    {pageTitle}
+                </h1>
+
+                {/* Breadcrumb (minimal) */}
+                <nav className="flex items-center justify-between gap-3">
+                    <Breadcrumb>
+                        <BreadcrumbList className="flex items-center gap-2">
+                            <BreadcrumbItem>
+                                <BreadcrumbLink asChild>
+                                    <Link href="/dashboard" className="flex items-center gap-2 rounded-full px-2 py-1 transition-colors hover:bg-accent/40" aria-label={t('dashboard.title')}>
+                                        <span className="inline-flex items-center justify-center rounded-full bg-primary p-1 text-primary-foreground">
+                                            <Home className="size-3 text-current" />
+                                        </span>
+                                        <span aria-hidden="true" className="ml-2 hidden text-sm font-medium text-foreground/90 md:inline">
+                                            {t('dashboard.title')}
+                                        </span>
+                                    </Link>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+
+                            {breadcrumbTrail.map((route, index) => {
+                                const isLast = index === breadcrumbTrail.length - 1;
+
+                                return (
+                                    <span key={route.path} className="contents">
+                                        <BreadcrumbSeparator />
+                                        <BreadcrumbItem>
+                                            {isLast ? (
+                                                <BreadcrumbPage className="text-sm font-medium text-foreground/90">{t(route.titleKey)}</BreadcrumbPage>
+                                            ) : (
+                                                <BreadcrumbLink asChild>
+                                                    <Link className="rounded-sm px-2 py-1 text-sm text-muted-foreground transition-colors hover:text-foreground/90" href={route.path}>
+                                                        {t(route.titleKey)}
+                                                    </Link>
+                                                </BreadcrumbLink>
+                                            )}
+                                        </BreadcrumbItem>
+                                    </span>
+                                );
+                            })}
+                        </BreadcrumbList>
+                    </Breadcrumb>
+
+                    {/* right side placeholder for actions (mobile friendly) */}
+                    <div className="flex items-center gap-2">{/* future: quick actions / small avatar */}</div>
+                </nav>
             </div>
         </header>
     );

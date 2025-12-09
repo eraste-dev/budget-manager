@@ -44,6 +44,8 @@ export interface Expense {
     month: string;
     /** Label describing the expense */
     label: string;
+    /** Optional description for additional details */
+    description: string | null;
     /** Amount of the expense in the local currency */
     amount: string;
     /** The category object (when loaded with relationship) */
@@ -64,6 +66,8 @@ export interface ExpenseFormData {
     expense_category_id: number;
     /** Label describing the expense */
     label: string;
+    /** Optional description for additional details */
+    description: string;
     /** Amount of the expense */
     amount: string;
 }

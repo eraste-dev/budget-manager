@@ -168,9 +168,14 @@ export function ExpenseList({
                                         key={expense.id}
                                         className="flex items-center justify-between gap-3 px-3 py-2.5"
                                     >
-                                        {/* Label */}
+                                        {/* Label and description */}
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate text-sm">{expense.label}</p>
+                                            {expense.description && (
+                                                <p className="text-muted-foreground truncate text-xs">
+                                                    {expense.description}
+                                                </p>
+                                            )}
                                         </div>
 
                                         {/* Amount with percentage */}

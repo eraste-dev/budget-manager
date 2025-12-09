@@ -20,7 +20,10 @@
         "month": "Month",
         "year": "Year",
         "actions": "Actions",
-        "settings": "Settings"
+        "settings": "Settings",
+        "description": "Description",
+        "descriptionPlaceholder": "Additional details...",
+        "optional": "optional"
     },
     "settings": {
         "profile": "Profile",

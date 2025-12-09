@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { type Expense, type ExpenseCategory, type ExpenseFormData } from '@/types/budget';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
@@ -55,6 +56,7 @@ export function ExpenseDialog({
         month: currentMonth,
         expense_category_id: categories[0]?.id || 0,
         label: '',
+        description: '',
         amount: '',
     });
 
@@ -67,6 +69,7 @@ export function ExpenseDialog({
                 month: expenseToEdit.month,
                 expense_category_id: expenseToEdit.expense_category_id,
                 label: expenseToEdit.label,
+                description: expenseToEdit.description || '',
                 amount: expenseToEdit.amount,
             });
         } else {
@@ -162,6 +165,27 @@ export function ExpenseDialog({
                         />
                         {errors.label && (
                             <p className="text-destructive text-sm">{errors.label}</p>
+                        )}
+                    </div>
+
+                    {/* Description input */}
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="description">
+                            {t('common.description')}
+                            <span className="text-muted-foreground ml-1 text-xs font-normal">
+                                ({t('common.optional')})
+                            </span>
+                        </Label>
+                        <Textarea
+                            id="description"
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            placeholder={t('common.descriptionPlaceholder')}
+                            rows={2}
+                            className="resize-none"
+                        />
+                        {errors.description && (
+                            <p className="text-destructive text-sm">{errors.description}</p>
                         )}
                     </div>
 

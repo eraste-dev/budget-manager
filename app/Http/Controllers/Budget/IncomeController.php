@@ -57,6 +57,7 @@ class IncomeController extends Controller
         $validated = $request->validate([
             'month' => 'required|string|size:7',
             'label' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'amount' => 'required|numeric|min:0',
         ]);
 
@@ -69,6 +70,7 @@ class IncomeController extends Controller
             'user_id' => Auth::id(),
             'month' => $validated['month'],
             'label' => $validated['label'],
+            'description' => $validated['description'] ?? null,
             'amount' => $validated['amount'],
         ]);
 
@@ -95,10 +97,15 @@ class IncomeController extends Controller
 
         $validated = $request->validate([
             'label' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'amount' => 'required|numeric|min:0',
         ]);
 
-        $income->update($validated);
+        $income->update([
+            'label' => $validated['label'],
+            'description' => $validated['description'] ?? null,
+            'amount' => $validated['amount'],
+        ]);
 
         return back()->with('success', 'Income updated successfully');
     }

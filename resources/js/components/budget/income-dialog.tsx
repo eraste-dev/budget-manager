@@ -10,6 +10,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { type Income, type IncomeFormData } from '@/types/budget';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
@@ -45,6 +46,7 @@ export function IncomeDialog({
     const { data, setData, post, put, processing, errors, reset } = useForm<IncomeFormData>({
         month: currentMonth,
         label: '',
+        description: '',
         amount: '',
     });
 
@@ -56,6 +58,7 @@ export function IncomeDialog({
             setData({
                 month: incomeToEdit.month,
                 label: incomeToEdit.label,
+                description: incomeToEdit.description || '',
                 amount: incomeToEdit.amount,
             });
         } else {
@@ -107,6 +110,27 @@ export function IncomeDialog({
                         />
                         {errors.label && (
                             <p className="text-destructive text-sm">{errors.label}</p>
+                        )}
+                    </div>
+
+                    {/* Description input */}
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="description">
+                            {t('common.description')}
+                            <span className="text-muted-foreground ml-1 text-xs font-normal">
+                                ({t('common.optional')})
+                            </span>
+                        </Label>
+                        <Textarea
+                            id="description"
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            placeholder={t('common.descriptionPlaceholder')}
+                            rows={2}
+                            className="resize-none"
+                        />
+                        {errors.description && (
+                            <p className="text-destructive text-sm">{errors.description}</p>
                         )}
                     </div>
 

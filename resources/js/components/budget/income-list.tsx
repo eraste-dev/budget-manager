@@ -77,9 +77,14 @@ export function IncomeList({ incomes, onEdit, isLocked = false, className }: Inc
                     key={income.id}
                     className="flex items-center justify-between gap-3 py-3"
                 >
-                    {/* Libellé et montant */}
+                    {/* Libellé et description */}
                     <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{income.label}</p>
+                        {income.description && (
+                            <p className="text-muted-foreground truncate text-xs">
+                                {income.description}
+                            </p>
+                        )}
                     </div>
 
                     {/* Montant */}
