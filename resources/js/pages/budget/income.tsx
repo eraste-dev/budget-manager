@@ -1,17 +1,11 @@
-import {
-    IncomeDialog,
-    IncomeList,
-    LockButton,
-    MonthPicker,
-    TotalDisplay,
-} from '@/components/budget';
+import { IncomeDialog, IncomeList, LockButton, MonthPicker, TotalDisplay } from '@/components/budget';
 import { useFab } from '@/contexts/fab-context';
 import AppLayout from '@/layouts/app-layout';
 import { type Income } from '@/types/budget';
 import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
 import { Plus } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -44,11 +38,11 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
     /**
      * Opens the dialog to add a new income entry.
      */
-    const handleAddClick = () => {
+    const handleAddClick = useCallback(() => {
         if (isLocked) return;
         setIncomeToEdit(null);
         setDialogOpen(true);
-    };
+    }, [isLocked]);
 
     /**
      * Configure FAB on mount/update for mobile bottom nav.
@@ -64,18 +58,15 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
         });
 
         return () => fab.resetConfig();
-    }, [isLocked, t]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLocked, handleAddClick]);
 
     /**
      * Animate container on mount.
      */
     useEffect(() => {
         if (containerRef.current) {
-            gsap.fromTo(
-                containerRef.current,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
-            );
+            gsap.fromTo(containerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
         }
     }, []);
 
@@ -98,10 +89,7 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
                     <div className="sticky top-0 z-10 border-b bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                         <div className="flex items-center justify-between">
                             <MonthPicker value={currentMonth} />
-                            <LockButton
-                                isLocked={isLocked}
-                                month={currentMonth}
-                            />
+                            <LockButton isLocked={isLocked} month={currentMonth} />
                         </div>
                     </div>
 
@@ -114,32 +102,19 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
 
                     {/* Liste des entrées */}
                     <div className="px-4 pt-2">
-                        <IncomeList
-                            incomes={incomes}
-                            onEdit={handleEdit}
-                            isLocked={isLocked}
-                        />
+                        <IncomeList incomes={incomes} onEdit={handleEdit} isLocked={isLocked} />
                     </div>
 
                     {/* Total sticky en bas */}
                     {incomes.length > 0 && (
-                        <div className="sticky bottom-24 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur md:bottom-6 supports-[backdrop-filter]:bg-background/60">
-                            <TotalDisplay
-                                label={t('income.totalIncome')}
-                                amount={total}
-                                className="border-0 pt-0"
-                            />
+                        <div className="sticky bottom-24 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bottom-6">
+                            <TotalDisplay label={t('income.totalIncome')} amount={total} className="border-0 pt-0" />
                         </div>
                     )}
                 </div>
             </div>
 
-            <IncomeDialog
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                currentMonth={currentMonth}
-                incomeToEdit={incomeToEdit}
-            />
+            <IncomeDialog open={dialogOpen} onOpenChange={setDialogOpen} currentMonth={currentMonth} incomeToEdit={incomeToEdit} />
         </AppLayout>
     );
 }

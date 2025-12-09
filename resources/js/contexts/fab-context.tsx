@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 
 /**
  * Configuration for the Floating Action Button.
@@ -42,16 +42,21 @@ const FabContext = createContext<FabContextValue | undefined>(undefined);
 export function FabProvider({ children }: { children: ReactNode }) {
     const [config, setConfigState] = useState<FabConfig>(defaultConfig);
 
-    const setConfig = (newConfig: FabConfig) => {
+    const setConfig = useCallback((newConfig: FabConfig) => {
         setConfigState((prev) => ({ ...prev, ...newConfig }));
-    };
+    }, []);
 
-    const resetConfig = () => {
+    const resetConfig = useCallback(() => {
         setConfigState(defaultConfig);
-    };
+    }, []);
+
+    const value = useMemo(
+        () => ({ config, setConfig, resetConfig }),
+        [config, setConfig, resetConfig]
+    );
 
     return (
-        <FabContext.Provider value={{ config, setConfig, resetConfig }}>
+        <FabContext.Provider value={value}>
             {children}
         </FabContext.Provider>
     );

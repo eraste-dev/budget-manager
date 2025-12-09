@@ -1,4 +1,10 @@
 import { useFab } from '@/contexts/fab-context';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
 import { LayoutGrid, Plus, Settings, Wallet } from 'lucide-react';
@@ -47,12 +53,13 @@ const rightNavItems: NavItem[] = [
  * Bottom navigation bar component (Flutter-style).
  *
  * Fixed at bottom with central FAB button that can be customized per page.
- * Mobile-first design with icon + label layout.
+ * Icons only with tooltips on hover.
  */
 export function BottomNavBar() {
     const { t } = useTranslation();
     const { url } = usePage();
-    const { config } = useFab();
+    const fabContext = useFab();
+    const config = fabContext?.config;
 
     /**
      * Check if a nav item is currently active.
@@ -65,58 +72,76 @@ export function BottomNavBar() {
     };
 
     /**
-     * Render a navigation item.
+     * Render a navigation item with tooltip.
      */
     const renderNavItem = (item: NavItem) => {
         const active = isActive(item.href);
         const Icon = item.icon;
+        const label = t(item.labelKey);
 
         return (
-            <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                    'flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors',
-                    active
-                        ? 'text-primary'
-                        : 'text-muted-foreground hover:text-foreground'
-                )}
-            >
-                <Icon className="size-5" />
-                <span className="text-[10px] font-medium">{t(item.labelKey)}</span>
-            </Link>
+            <Tooltip key={item.href}>
+                <TooltipTrigger asChild>
+                    <Link
+                        href={item.href}
+                        className={cn(
+                            'flex items-center justify-center p-3 transition-all duration-200 rounded-xl',
+                            active
+                                ? 'text-primary bg-primary/10'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                        )}
+                        aria-label={label}
+                    >
+                        <Icon className={cn('size-6', active && 'size-[26px]')} />
+                    </Link>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                    {label}
+                </TooltipContent>
+            </Tooltip>
         );
     };
 
-    return (
-        <nav className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="mx-auto flex h-16 max-w-lg items-center justify-around">
-                {/* Left nav items */}
-                {leftNavItems.map(renderNavItem)}
+    const showFab = config?.visible && config?.onClick;
 
-                {/* Central FAB */}
-                <div className="relative flex flex-1 items-center justify-center">
-                    <button
-                        onClick={config.onClick}
-                        disabled={!config.visible || !config.onClick}
-                        className={cn(
-                            'absolute -top-6 flex size-14 items-center justify-center rounded-full shadow-lg transition-all duration-200',
-                            config.visible
-                                ? 'bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95'
-                                : 'bg-muted text-muted-foreground cursor-not-allowed'
-                        )}
-                        aria-label={config.label}
-                    >
-                        {config.icon || <Plus className="size-6" />}
-                    </button>
+    return (
+        <TooltipProvider delayDuration={300}>
+            {/* Floating Action Button - positioned above the nav */}
+            {showFab && (
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <button
+                            onClick={config.onClick}
+                            className="fixed bottom-20 left-1/2 z-[60] -translate-x-1/2 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-all duration-300 hover:bg-primary/90 hover:scale-105 hover:shadow-2xl active:scale-95"
+                            aria-label={config.label}
+                        >
+                            <div className="transition-transform duration-200">
+                                {config.icon || <Plus className="size-7" strokeWidth={2.5} />}
+                            </div>
+                        </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                        {config.label}
+                    </TooltipContent>
+                </Tooltip>
+            )}
+
+            {/* Bottom Navigation Bar */}
+            <nav className="fixed inset-x-0 bottom-0 z-50 bg-background/95 backdrop-blur-xl border-t border-border/40">
+                <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4">
+                    {/* Left nav items */}
+                    {leftNavItems.map(renderNavItem)}
+
+                    {/* Spacer for FAB */}
+                    <div className="w-14" />
+
+                    {/* Right nav items */}
+                    {rightNavItems.map(renderNavItem)}
                 </div>
 
-                {/* Right nav items */}
-                {rightNavItems.map(renderNavItem)}
-            </div>
-
-            {/* Safe area padding for iOS */}
-            <div className="h-safe-area-inset-bottom bg-background" />
-        </nav>
+                {/* Safe area padding for iOS */}
+                <div className="h-safe-area-inset-bottom bg-background/95" />
+            </nav>
+        </TooltipProvider>
     );
 }

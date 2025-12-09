@@ -1,6 +1,7 @@
 import '../css/app.css';
 import './i18n';
 
+import { FabProvider } from '@/contexts/fab-context';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
@@ -21,7 +22,9 @@ createInertiaApp({
 
         root.render(
             <StrictMode>
-                <App {...props} />
+                <FabProvider>
+                    <App {...props} />
+                </FabProvider>
             </StrictMode>,
         );
     },

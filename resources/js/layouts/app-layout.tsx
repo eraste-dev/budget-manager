@@ -1,5 +1,4 @@
 import { BottomNavBar } from '@/components/bottom-nav-bar';
-import { FabProvider } from '@/contexts/fab-context';
 import { type ReactNode } from 'react';
 
 /**
@@ -18,11 +17,9 @@ interface AppLayoutProps {
  */
 export default function AppLayout({ children }: AppLayoutProps) {
     return (
-        <FabProvider>
-            <div className="flex min-h-svh flex-col bg-background">
-                <main className="flex flex-1 flex-col">{children}</main>
-                <BottomNavBar />
-            </div>
-        </FabProvider>
+        <div className="flex min-h-svh flex-col bg-background">
+            <main className="flex flex-1 flex-col">{children}</main>
+            <BottomNavBar />
+        </div>
     );
 }
