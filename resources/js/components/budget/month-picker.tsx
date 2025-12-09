@@ -16,6 +16,8 @@ import { useTranslation } from 'react-i18next';
 interface MonthPickerProps {
     /** Current selected month in YYYY-MM format */
     value: string;
+    /** Route name to navigate to (defaults to budget.income) */
+    routeName?: string;
     /** Additional CSS classes */
     className?: string;
 }
@@ -26,7 +28,7 @@ interface MonthPickerProps {
  * Allows navigation between months using arrows or a grid selector.
  * Navigates to the selected month via Inertia router.
  */
-export function MonthPicker({ value, className }: MonthPickerProps) {
+export function MonthPicker({ value, routeName = 'budget.income', className }: MonthPickerProps) {
     const { t, i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [viewYear, setViewYear] = useState(() => parseInt(value.split('-')[0]));
@@ -52,11 +54,22 @@ export function MonthPicker({ value, className }: MonthPickerProps) {
     };
 
     /**
+     * Get the route path from route name.
+     */
+    const getRoutePath = (): string => {
+        const routes: Record<string, string> = {
+            'budget.income': '/budget/income',
+            'budget.expenses': '/budget/expenses',
+        };
+        return routes[routeName] || '/budget/income';
+    };
+
+    /**
      * Navigate to a specific month.
      */
     const navigateToMonth = (year: number, monthIndex: number) => {
         const month = `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
-        router.get('/budget/income', { month }, { preserveState: true });
+        router.get(getRoutePath(), { month }, { preserveState: true });
         setIsOpen(false);
     };
 

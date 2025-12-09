@@ -17,7 +17,7 @@ interface AppLayoutProps {
  */
 export default function AppLayout({ children }: AppLayoutProps) {
     return (
-        <div className="flex min-h-svh flex-col bg-background">
+        <div className="flex min-h-svh flex-col">
             <main className="flex flex-1 flex-col">{children}</main>
             <BottomNavBar />
         </div>

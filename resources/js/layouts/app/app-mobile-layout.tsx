@@ -10,7 +10,7 @@ import { type PropsWithChildren } from 'react';
 export default function AppMobileLayout({ children }: PropsWithChildren) {
     return (
         <FabProvider>
-            <div className="flex min-h-svh flex-col bg-background">
+            <div className="flex min-h-svh flex-col">
                 <main className="flex flex-1 flex-col">{children}</main>
                 <BottomNavBar />
             </div>

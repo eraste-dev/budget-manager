@@ -4,3 +4,4 @@
  */
 
 export * from './income';
+export * from './expense';

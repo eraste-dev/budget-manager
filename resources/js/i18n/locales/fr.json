@@ -132,5 +132,68 @@
         "unlockMonth": "Déverrouiller ce mois",
         "monthLocked": "Ce mois est verrouillé",
         "monthLockedDescription": "Vous ne pouvez pas modifier les données de ce mois."
+    },
+    "budgetRule": {
+        "title": "Règle 50/30/20",
+        "essentials": "Dépenses essentielles",
+        "savingsInvestments": "Épargne & Investissements",
+        "leisure": "Loisirs",
+        "target": "Objectif",
+        "remaining": "Restant",
+        "exceeded": "Dépassé",
+        "totalUsage": "Utilisation totale",
+        "observations": "Observations",
+        "overBudget": "{{category}} dépasse le budget de {{percentage}}% ({{amount}} FCFA en trop)",
+        "slightlyOver": "{{category}} légèrement au-dessus de l'objectif (+{{percentage}}%)",
+        "savingsTooLow": "Attention : votre épargne est à {{percentage}}%, en dessous du minimum recommandé de 20%",
+        "allGood": "Excellent ! Votre répartition respecte la règle 50/30/20"
+    },
+    "expense": {
+        "title": "Sorties",
+        "addExpense": "Ajouter une sortie",
+        "editExpense": "Modifier la sortie",
+        "totalExpenses": "Total des sorties",
+        "label": "Libellé",
+        "labelPlaceholder": "Ex: Loyer, Courses, Transport...",
+        "amount": "Montant",
+        "category": "Catégorie",
+        "selectCategory": "Sélectionner une catégorie",
+        "dialogDescription": "Saisissez les informations de la sortie",
+        "suggestions": {
+            "essentials": [
+                "Loyer",
+                "Électricité",
+                "Eau",
+                "Gaz",
+                "Internet",
+                "Transport",
+                "Alimentation",
+                "Courses",
+                "Téléphone"
+            ],
+            "savings": [
+                "Épargne",
+                "Investissement",
+                "Assurance",
+                "Retraite",
+                "Fonds d'urgence"
+            ],
+            "leisure": [
+                "Restaurant",
+                "Sortie",
+                "Cinéma",
+                "Sport",
+                "Vêtements",
+                "Loisirs",
+                "Voyage"
+            ],
+            "investments": [
+                "Actions",
+                "Crypto",
+                "Immobilier",
+                "Formation",
+                "Business"
+            ]
+        }
     }
 }

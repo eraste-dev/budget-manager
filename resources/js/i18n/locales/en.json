@@ -132,5 +132,68 @@
         "unlockMonth": "Unlock this month",
         "monthLocked": "This month is locked",
         "monthLockedDescription": "You cannot modify data for this month."
+    },
+    "budgetRule": {
+        "title": "50/30/20 Rule",
+        "essentials": "Essential expenses",
+        "savingsInvestments": "Savings & Investments",
+        "leisure": "Leisure",
+        "target": "Target",
+        "remaining": "Remaining",
+        "exceeded": "Exceeded",
+        "totalUsage": "Total usage",
+        "observations": "Observations",
+        "overBudget": "{{category}} is over budget by {{percentage}}% ({{amount}} FCFA excess)",
+        "slightlyOver": "{{category}} slightly above target (+{{percentage}}%)",
+        "savingsTooLow": "Warning: your savings are at {{percentage}}%, below the recommended minimum of 20%",
+        "allGood": "Excellent! Your distribution follows the 50/30/20 rule"
+    },
+    "expense": {
+        "title": "Expenses",
+        "addExpense": "Add expense",
+        "editExpense": "Edit expense",
+        "totalExpenses": "Total expenses",
+        "label": "Label",
+        "labelPlaceholder": "E.g.: Rent, Groceries, Transport...",
+        "amount": "Amount",
+        "category": "Category",
+        "selectCategory": "Select a category",
+        "dialogDescription": "Enter the expense details",
+        "suggestions": {
+            "essentials": [
+                "Rent",
+                "Electricity",
+                "Water",
+                "Gas",
+                "Internet",
+                "Transport",
+                "Food",
+                "Groceries",
+                "Phone"
+            ],
+            "savings": [
+                "Savings",
+                "Investment",
+                "Insurance",
+                "Retirement",
+                "Emergency fund"
+            ],
+            "leisure": [
+                "Restaurant",
+                "Outing",
+                "Cinema",
+                "Sport",
+                "Clothing",
+                "Leisure",
+                "Travel"
+            ],
+            "investments": [
+                "Stocks",
+                "Crypto",
+                "Real estate",
+                "Training",
+                "Business"
+            ]
+        }
     }
 }

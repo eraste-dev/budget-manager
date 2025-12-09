@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Plus, Settings, Wallet } from 'lucide-react';
+import { CreditCard, LayoutGrid, Plus, Settings, Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -42,6 +42,11 @@ const leftNavItems: NavItem[] = [
  * Right navigation items (after FAB).
  */
 const rightNavItems: NavItem[] = [
+    {
+        href: '/budget/expenses',
+        icon: CreditCard,
+        labelKey: 'expense.title',
+    },
     {
         href: '/settings/profile',
         icon: Settings,

@@ -1,5 +1,8 @@
+export { BudgetRuleCard } from './budget-rule-card';
 export { CurrencyInput } from './currency-input';
 export { EnvelopeCard } from './envelope-card';
+export { ExpenseDialog } from './expense-dialog';
+export { ExpenseList } from './expense-list';
 export { FloatingActionButton } from './floating-action-button';
 export { IncomeDialog } from './income-dialog';
 export { IncomeList } from './income-list';
