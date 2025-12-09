@@ -15,10 +15,11 @@
         "confirm": "Confirmer",
         "close": "Fermer",
         "search": "Rechercher",
-        "noData": "Aucune donnée",
+        "noData": "Aucune entrée pour ce mois",
         "total": "Total",
         "month": "Mois",
-        "year": "Année"
+        "year": "Année",
+        "actions": "Actions"
     },
     "auth": {
         "login": "Connexion",
@@ -49,7 +50,24 @@
         "salary": "Salaire",
         "otherIncome": "Autres revenus",
         "totalIncome": "Total des entrées",
-        "envelopes": "Enveloppes calculées"
+        "addIncome": "Ajouter une entrée",
+        "editIncome": "Modifier l'entrée",
+        "label": "Libellé",
+        "labelPlaceholder": "Ex: Salaire, Freelance, Prime...",
+        "amount": "Montant",
+        "dialogDescription": "Saisissez les informations de l'entrée",
+        "suggestions": [
+            "Salaire",
+            "Prime",
+            "Bonus",
+            "Freelance",
+            "Dividendes",
+            "Loyer perçu",
+            "Remboursement",
+            "Vente",
+            "Don",
+            "Autre"
+        ]
     },
     "expenses": {
         "title": "Dépenses",
@@ -105,5 +123,13 @@
         "budgetExceeded": "Budget dépassé !",
         "savedSuccessfully": "Enregistré avec succès",
         "confirmDelete": "Êtes-vous sûr de vouloir supprimer ?"
+    },
+    "budget": {
+        "lock": "Verrouiller",
+        "unlock": "Déverrouiller",
+        "lockMonth": "Verrouiller ce mois",
+        "unlockMonth": "Déverrouiller ce mois",
+        "monthLocked": "Ce mois est verrouillé",
+        "monthLockedDescription": "Vous ne pouvez pas modifier les données de ce mois."
     }
 }

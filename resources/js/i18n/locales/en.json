@@ -15,10 +15,11 @@
         "confirm": "Confirm",
         "close": "Close",
         "search": "Search",
-        "noData": "No data",
+        "noData": "No entries for this month",
         "total": "Total",
         "month": "Month",
-        "year": "Year"
+        "year": "Year",
+        "actions": "Actions"
     },
     "auth": {
         "login": "Login",
@@ -49,7 +50,24 @@
         "salary": "Salary",
         "otherIncome": "Other income",
         "totalIncome": "Total income",
-        "envelopes": "Calculated envelopes"
+        "addIncome": "Add income",
+        "editIncome": "Edit income",
+        "label": "Label",
+        "labelPlaceholder": "E.g.: Salary, Freelance, Bonus...",
+        "amount": "Amount",
+        "dialogDescription": "Enter the income details",
+        "suggestions": [
+            "Salary",
+            "Bonus",
+            "Commission",
+            "Freelance",
+            "Dividends",
+            "Rental income",
+            "Refund",
+            "Sale",
+            "Gift",
+            "Other"
+        ]
     },
     "expenses": {
         "title": "Expenses",
@@ -105,5 +123,13 @@
         "budgetExceeded": "Budget exceeded!",
         "savedSuccessfully": "Saved successfully",
         "confirmDelete": "Are you sure you want to delete?"
+    },
+    "budget": {
+        "lock": "Lock",
+        "unlock": "Unlock",
+        "lockMonth": "Lock this month",
+        "unlockMonth": "Unlock this month",
+        "monthLocked": "This month is locked",
+        "monthLockedDescription": "You cannot modify data for this month."
     }
 }
