@@ -81,6 +81,7 @@ class ExpenseController extends Controller
             'month' => 'required|string|size:7',
             'expense_category_id' => 'required|exists:expense_categories,id',
             'label' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'amount' => 'required|numeric|min:0',
         ]);
 
@@ -94,6 +95,7 @@ class ExpenseController extends Controller
             'expense_category_id' => $validated['expense_category_id'],
             'month' => $validated['month'],
             'label' => $validated['label'],
+            'description' => $validated['description'] ?? null,
             'amount' => $validated['amount'],
         ]);
 
@@ -121,10 +123,16 @@ class ExpenseController extends Controller
         $validated = $request->validate([
             'expense_category_id' => 'required|exists:expense_categories,id',
             'label' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'amount' => 'required|numeric|min:0',
         ]);
 
-        $expense->update($validated);
+        $expense->update([
+            'expense_category_id' => $validated['expense_category_id'],
+            'label' => $validated['label'],
+            'description' => $validated['description'] ?? null,
+            'amount' => $validated['amount'],
+        ]);
 
         return back()->with('success', 'Expense updated successfully');
     }

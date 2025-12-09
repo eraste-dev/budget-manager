@@ -121,9 +121,12 @@ export default function IncomePage({ incomes, currentMonth, total, isLocked }: P
                         <IncomeList incomes={incomes} onEdit={handleEdit} isLocked={isLocked} />
                     </div>
 
-                    {/* Total sticky en bas */}
+                    {/* Spacer to prevent content from being hidden by sticky summary and FAB */}
+                    <div className="h-48 md:h-24" />
+
+                    {/* Total sticky en bas - positioned above FAB */}
                     {incomes.length > 0 && (
-                        <div className="sticky bottom-24 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bottom-6">
+                        <div className="sticky bottom-36 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bottom-6">
                             <TotalDisplay label={t('income.totalIncome')} amount={total} className="border-0 pt-0" />
                         </div>
                     )}

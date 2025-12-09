@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property int $expense_category_id
  * @property string $month Format: YYYY-MM
- * @property string $label Expense description
+ * @property string $label Expense label
+ * @property string|null $description Optional description
  * @property float $amount Expense amount
  */
 class Expense extends Model
@@ -30,6 +31,7 @@ class Expense extends Model
         'expense_category_id',
         'month',
         'label',
+        'description',
         'amount',
     ];
 

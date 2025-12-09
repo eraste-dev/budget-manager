@@ -1,11 +1,4 @@
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Link, usePage } from '@inertiajs/react';
 import { Home } from 'lucide-react';
 import { useMemo } from 'react';
@@ -60,7 +53,7 @@ const buildBreadcrumbTrail = (currentPath: string): RouteConfig[] => {
  * Mobile-first header with page title and breadcrumb navigation.
  * Shows breadcrumb navigation and current page title.
  */
-export function MobileHeader() {
+export function NavHeader() {
     const { t } = useTranslation();
     const { url } = usePage();
 

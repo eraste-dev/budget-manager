@@ -1,5 +1,5 @@
 import { BottomNavBar } from '@/components/bottom-nav-bar';
-import { MobileHeader } from '@/components/mobile-header';
+import { NavHeader } from '@/components/nav-header';
 import { type ReactNode } from 'react';
 
 /**
@@ -19,7 +19,7 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
     return (
         <div className="flex min-h-svh flex-col">
-            <MobileHeader />
+            <NavHeader />
             <main className="flex flex-1 flex-col">{children}</main>
             <BottomNavBar />
         </div>

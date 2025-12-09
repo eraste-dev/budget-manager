@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property string $month Format: YYYY-MM
  * @property string $label Income source label
+ * @property string|null $description Optional description
  * @property float $amount Income amount
  */
 class Income extends Model
@@ -28,6 +29,7 @@ class Income extends Model
         'user_id',
         'month',
         'label',
+        'description',
         'amount',
     ];
 

@@ -147,9 +147,12 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
                         </div>
                     )}
 
-                    {/* Sticky summary at bottom */}
+                    {/* Spacer to prevent content from being hidden by sticky summary and FAB */}
+                    <div className="h-48 md:h-24" />
+
+                    {/* Sticky summary at bottom - positioned above FAB */}
                     {(expenses.length > 0 || totalIncome > 0) && (
-                        <div className="sticky bottom-24 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bottom-6">
+                        <div className="sticky bottom-36 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bottom-6">
                             {/* Income vs Expenses comparison */}
                             <div className="grid grid-cols-2 gap-4 border-b pb-3 mb-3">
                                 <div>
