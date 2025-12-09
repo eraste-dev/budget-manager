@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Expense Model
@@ -62,5 +63,57 @@ class Expense extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(ExpenseCategory::class, 'expense_category_id');
+    }
+
+    /**
+     * Get the withdrawals for this expense.
+     *
+     * @return HasMany<Withdrawal>
+     */
+    public function withdrawals(): HasMany
+    {
+        return $this->hasMany(Withdrawal::class);
+    }
+
+    /**
+     * Get the total withdrawn amount for this expense.
+     *
+     * @return float
+     */
+    public function getWithdrawnAmountAttribute(): float
+    {
+        return (float) $this->withdrawals()->sum('amount');
+    }
+
+    /**
+     * Get the remaining amount to withdraw.
+     *
+     * @return float
+     */
+    public function getRemainingAmountAttribute(): float
+    {
+        return (float) $this->amount - $this->withdrawn_amount;
+    }
+
+    /**
+     * Get the withdrawal status.
+     * Returns: 'pending' (0%), 'partial' (1-99%), 'completed' (100%)
+     *
+     * @return string
+     */
+    public function getWithdrawalStatusAttribute(): string
+    {
+        $withdrawn = $this->withdrawn_amount;
+        $total = (float) $this->amount;
+
+        if ($withdrawn <= 0) {
+            return 'pending';
+        }
+
+        if ($withdrawn >= $total) {
+            return 'completed';
+        }
+
+        return 'partial';
     }
 }

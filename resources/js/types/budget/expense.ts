@@ -3,6 +3,8 @@
  * @module types/budget/expense
  */
 
+import type { Withdrawal, WithdrawalStatus } from './withdrawal';
+
 /**
  * Represents an expense category.
  * Categories can be system defaults or user-created.
@@ -50,6 +52,14 @@ export interface Expense {
     amount: string;
     /** The category object (when loaded with relationship) */
     category?: ExpenseCategory;
+    /** Withdrawals made against this expense */
+    withdrawals?: Withdrawal[];
+    /** Total amount withdrawn (computed) */
+    withdrawn_amount?: number;
+    /** Remaining amount to withdraw (computed) */
+    remaining_amount?: number;
+    /** Withdrawal status (computed) */
+    withdrawal_status?: WithdrawalStatus;
     /** Creation timestamp */
     created_at: string;
     /** Last update timestamp */

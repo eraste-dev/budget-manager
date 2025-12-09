@@ -123,6 +123,8 @@
         "totalIncome": "Revenus totaux",
         "totalExpenses": "Dépenses totales",
         "balance": "Solde",
+        "withdrawn": "Retiré",
+        "availableBalance": "Reste en compte",
         "percentUsed": "% utilisé",
         "saveMonth": "Enregistrer le mois",
         "exportJson": "Exporter en JSON"
@@ -231,5 +233,26 @@
         "placeholder": "Ex: 6*6500",
         "result": "Résultat",
         "invalid": "Expression invalide"
+    },
+    "withdrawal": {
+        "addWithdrawal": "Effectuer un retrait",
+        "dialogDescription": "Saisissez les informations du retrait",
+        "batchDescription": "Retrait groupé pour {{count}} dépenses",
+        "selectExpenses": "Sélectionner les dépenses",
+        "remaining": "Restant",
+        "date": "Date du retrait",
+        "amount": "Montant",
+        "note": "Note",
+        "notePlaceholder": "Note optionnelle...",
+        "usePercentage": "Utiliser un pourcentage",
+        "percentage": "Pourcentage",
+        "withdraw": "Retirer",
+        "withdrawSelected": "Retirer ({{count}})",
+        "history": "Historique des retraits",
+        "status": {
+            "pending": "Planifié",
+            "partial": "En cours",
+            "completed": "Confirmé"
+        }
     }
 }

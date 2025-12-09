@@ -1,7 +1,8 @@
 import { BudgetRuleCard, DuplicateDialog, ExpenseDialog, ExpenseList, LockButton, MonthPicker } from '@/components/budget';
+import { ExpenseSummaryCard } from '@/components/budget/expense-summary-card';
+import { WithdrawalDialog } from '@/components/budget/withdrawal-dialog';
 import { Button } from '@/components/ui/button';
 import { useFab } from '@/contexts/fab-context';
-import { cn } from '@/lib/utils';
 import AppLayout from '@/layouts/app-layout';
 import { type Expense, type ExpenseCategory, type TotalsByCategory } from '@/types/budget';
 import { Head } from '@inertiajs/react';
@@ -9,18 +10,6 @@ import gsap from 'gsap';
 import { Copy, Plus } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-/**
- * Formats a number as currency in French locale.
- */
-const formatCurrency = (amount: number | string): string => {
-    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat('fr-FR', {
-        style: 'decimal',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(numAmount);
-};
 
 /**
  * Props for the Expenses page component.
@@ -36,6 +25,8 @@ interface Props {
     currentMonth: string;
     /** Total sum of all expenses for the month */
     total: number;
+    /** Total amount withdrawn */
+    totalWithdrawn: number;
     /** Total income for the month (for comparison) */
     totalIncome: number;
     /** Whether the current month is locked */
@@ -48,12 +39,14 @@ interface Props {
  * Mobile-first layout with sticky header for month navigation.
  * Displays expense entries grouped by category with add, edit, and delete functionality.
  */
-export default function ExpensesPage({ expenses, categories, totalsByCategory, currentMonth, total, totalIncome, isLocked }: Props) {
+export default function ExpensesPage({ expenses, categories, totalsByCategory, currentMonth, total, totalWithdrawn, totalIncome, isLocked }: Props) {
     const { t } = useTranslation();
     const containerRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
+    const [withdrawalDialogOpen, setWithdrawalDialogOpen] = useState(false);
     const [expenseToEdit, setExpenseToEdit] = useState<Expense | null>(null);
+    const [selectedExpenseIds, setSelectedExpenseIds] = useState<number[]>([]);
     const fab = useFab();
 
     /**
@@ -100,6 +93,15 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
         setDialogOpen(true);
     };
 
+    /**
+     * Opens the withdrawal dialog for selected expenses.
+     */
+    const handleWithdraw = (expenseIds: number[]) => {
+        if (isLocked) return;
+        setSelectedExpenseIds(expenseIds);
+        setWithdrawalDialogOpen(true);
+    };
+
     return (
         <AppLayout>
             <Head title={t('expense.title')} />
@@ -137,7 +139,7 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
 
                     {/* Expense list */}
                     <div className="px-4 pt-4">
-                        <ExpenseList expenses={expenses} categories={categories} totalIncome={totalIncome} onEdit={handleEdit} isLocked={isLocked} />
+                        <ExpenseList expenses={expenses} categories={categories} totalIncome={totalIncome} onEdit={handleEdit} onWithdraw={handleWithdraw} isLocked={isLocked} />
                     </div>
 
                     {/* Budget rule 50/30/20 analysis */}
@@ -152,36 +154,11 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
 
                     {/* Sticky summary at bottom - positioned above FAB */}
                     {(expenses.length > 0 || totalIncome > 0) && (
-                        <div className="sticky bottom-36 mx-4 mt-4 rounded-lg border bg-background/95 p-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 md:bottom-6">
-                            {/* Income vs Expenses comparison */}
-                            <div className="grid grid-cols-2 gap-4 border-b pb-3 mb-3">
-                                <div>
-                                    <p className="text-muted-foreground text-xs">{t('income.totalIncome')}</p>
-                                    <p className="text-base font-semibold tabular-nums text-green-600 dark:text-green-400">
-                                        {formatCurrency(totalIncome)} <span className="text-xs font-normal">FCFA</span>
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-muted-foreground text-xs">{t('expense.totalExpenses')}</p>
-                                    <p className="text-base font-semibold tabular-nums text-red-600 dark:text-red-400">
-                                        {formatCurrency(total)} <span className="text-xs font-normal">FCFA</span>
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Balance */}
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">{t('summary.balance')}</span>
-                                <span className={cn(
-                                    'text-lg font-bold tabular-nums',
-                                    totalIncome - total >= 0
-                                        ? 'text-green-600 dark:text-green-400'
-                                        : 'text-red-600 dark:text-red-400'
-                                )}>
-                                    {totalIncome - total >= 0 ? '+' : ''}{formatCurrency(totalIncome - total)} <span className="text-xs font-normal">FCFA</span>
-                                </span>
-                            </div>
-                        </div>
+                        <ExpenseSummaryCard
+                            totalIncome={totalIncome}
+                            totalExpenses={total}
+                            totalWithdrawn={totalWithdrawn}
+                        />
                     )}
                 </div>
             </div>
@@ -193,6 +170,13 @@ export default function ExpensesPage({ expenses, categories, totalsByCategory, c
                 targetMonth={currentMonth}
                 type="expense"
                 targetHasData={expenses.length > 0}
+            />
+            <WithdrawalDialog
+                open={withdrawalDialogOpen}
+                onOpenChange={setWithdrawalDialogOpen}
+                expenses={expenses}
+                selectedExpenseIds={selectedExpenseIds}
+                isLocked={isLocked}
             />
         </AppLayout>
     );

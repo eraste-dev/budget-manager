@@ -4,6 +4,7 @@ use App\Http\Controllers\Budget\ExpenseCategoryController;
 use App\Http\Controllers\Budget\ExpenseController;
 use App\Http\Controllers\Budget\IncomeController;
 use App\Http\Controllers\Budget\MonthLockController;
+use App\Http\Controllers\Budget\WithdrawalController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,6 +43,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Month lock routes
     Route::post('budget/month-lock', [MonthLockController::class, 'store'])->name('budget.month-lock.store');
     Route::delete('budget/month-lock/{month}', [MonthLockController::class, 'destroy'])->name('budget.month-lock.destroy');
+
+    // Withdrawal routes
+    Route::post('budget/withdrawals', [WithdrawalController::class, 'store'])->name('budget.withdrawals.store');
+    Route::post('budget/withdrawals/batch', [WithdrawalController::class, 'storeBatch'])->name('budget.withdrawals.store-batch');
+    Route::put('budget/withdrawals/{withdrawal}', [WithdrawalController::class, 'update'])->name('budget.withdrawals.update');
+    Route::delete('budget/withdrawals/{withdrawal}', [WithdrawalController::class, 'destroy'])->name('budget.withdrawals.destroy');
 });
 
 require __DIR__.'/settings.php';

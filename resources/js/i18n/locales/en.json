@@ -123,6 +123,8 @@
         "totalIncome": "Total income",
         "totalExpenses": "Total expenses",
         "balance": "Balance",
+        "withdrawn": "Withdrawn",
+        "availableBalance": "Available balance",
         "percentUsed": "% used",
         "saveMonth": "Save month",
         "exportJson": "Export to JSON"
@@ -231,5 +233,26 @@
         "placeholder": "E.g., 6*6500",
         "result": "Result",
         "invalid": "Invalid expression"
+    },
+    "withdrawal": {
+        "addWithdrawal": "Make a withdrawal",
+        "dialogDescription": "Enter the withdrawal details",
+        "batchDescription": "Batch withdrawal for {{count}} expenses",
+        "selectExpenses": "Select expenses",
+        "remaining": "Remaining",
+        "date": "Withdrawal date",
+        "amount": "Amount",
+        "note": "Note",
+        "notePlaceholder": "Optional note...",
+        "usePercentage": "Use percentage",
+        "percentage": "Percentage",
+        "withdraw": "Withdraw",
+        "withdrawSelected": "Withdraw ({{count}})",
+        "history": "Withdrawal history",
+        "status": {
+            "pending": "Planned",
+            "partial": "In progress",
+            "completed": "Confirmed"
+        }
     }
 }

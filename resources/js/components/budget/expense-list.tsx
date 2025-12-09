@@ -1,9 +1,11 @@
+import { WithdrawalList } from '@/components/budget/withdrawal-list';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { type Expense, type ExpenseCategory } from '@/types/budget';
 import { router } from '@inertiajs/react';
-import { ChevronDown, Pencil, Trash2 } from 'lucide-react';
+import { Banknote, ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,6 +21,8 @@ interface ExpenseListProps {
     totalIncome: number;
     /** Callback when edit button is clicked */
     onEdit: (expense: Expense) => void;
+    /** Callback when withdrawal button is clicked */
+    onWithdraw: (expenseIds: number[]) => void;
     /** Whether the month is locked (disables edit/delete) */
     isLocked?: boolean;
     /** Additional CSS classes */
@@ -49,11 +53,26 @@ const calculatePercentage = (amount: number, totalIncome: number): string => {
     return percentage < 0.1 ? '<0.1' : percentage.toFixed(1);
 };
 
+/**
+ * Returns the status badge color based on withdrawal status.
+ */
+const getStatusColor = (status?: string): string => {
+    switch (status) {
+        case 'completed':
+            return 'bg-green-500/20 text-green-700 dark:text-green-400';
+        case 'partial':
+            return 'bg-amber-500/20 text-amber-700 dark:text-amber-400';
+        default:
+            return 'bg-muted text-muted-foreground';
+    }
+};
+
 export function ExpenseList({
     expenses,
     categories,
     totalIncome,
     onEdit,
+    onWithdraw,
     isLocked = false,
     className,
 }: ExpenseListProps) {
@@ -61,6 +80,8 @@ export function ExpenseList({
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null);
     const [openCategories, setOpenCategories] = useState<Record<number, boolean>>({});
+    const [selectedExpenses, setSelectedExpenses] = useState<number[]>([]);
+    const [expandedExpenses, setExpandedExpenses] = useState<Record<number, boolean>>({});
 
     /**
      * Toggle a category's open state.
@@ -88,6 +109,35 @@ export function ExpenseList({
         if (expenseToDelete) {
             router.delete(`/budget/expenses/${expenseToDelete.id}`);
         }
+    };
+
+    /**
+     * Toggle expense selection for batch withdrawal.
+     */
+    const toggleExpenseSelection = (expenseId: number) => {
+        setSelectedExpenses((prev) =>
+            prev.includes(expenseId)
+                ? prev.filter((id) => id !== expenseId)
+                : [...prev, expenseId]
+        );
+    };
+
+    /**
+     * Toggle expanded state for expense withdrawals.
+     */
+    const toggleExpenseExpanded = (expenseId: number) => {
+        setExpandedExpenses((prev) => ({
+            ...prev,
+            [expenseId]: !prev[expenseId],
+        }));
+    };
+
+    /**
+     * Check if expense has remaining amount.
+     */
+    const hasRemainingAmount = (expense: Expense): boolean => {
+        const remaining = expense.remaining_amount ?? parseFloat(expense.amount);
+        return remaining > 0;
     };
 
     if (expenses.length === 0) {
@@ -163,68 +213,138 @@ export function ExpenseList({
                         {/* Expenses in this category */}
                         <CollapsibleContent>
                             <div className="divide-y border-t">
-                                {categoryExpenses.map((expense) => (
-                                    <div
-                                        key={expense.id}
-                                        className="flex items-center justify-between gap-3 px-3 py-2.5"
-                                    >
-                                        {/* Label and description */}
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm">{expense.label}</p>
-                                            {expense.description && (
-                                                <p className="text-muted-foreground truncate text-xs">
-                                                    {expense.description}
-                                                </p>
+                                {categoryExpenses.map((expense) => {
+                                    const remaining = expense.remaining_amount ?? parseFloat(expense.amount);
+                                    const hasWithdrawals = (expense.withdrawals?.length ?? 0) > 0;
+                                    const isExpanded = expandedExpenses[expense.id] ?? false;
+
+                                    return (
+                                        <div key={expense.id} className="px-3 py-2.5">
+                                            <div className="flex items-center gap-2">
+                                                {/* Selection checkbox */}
+                                                {!isLocked && hasRemainingAmount(expense) && (
+                                                    <Checkbox
+                                                        checked={selectedExpenses.includes(expense.id)}
+                                                        onCheckedChange={() => toggleExpenseSelection(expense.id)}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="shrink-0"
+                                                    />
+                                                )}
+
+                                                {/* Label and description */}
+                                                <div
+                                                    className="min-w-0 flex-1 cursor-pointer"
+                                                    onClick={() => hasWithdrawals && toggleExpenseExpanded(expense.id)}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="truncate text-sm">{expense.label}</p>
+                                                        <span
+                                                            className={cn(
+                                                                'rounded px-1.5 py-0.5 text-[10px] font-medium',
+                                                                getStatusColor(expense.withdrawal_status)
+                                                            )}
+                                                        >
+                                                            {t(`withdrawal.status.${expense.withdrawal_status || 'pending'}`)}
+                                                        </span>
+                                                    </div>
+                                                    {expense.description && (
+                                                        <p className="text-muted-foreground truncate text-xs">
+                                                            {expense.description}
+                                                        </p>
+                                                    )}
+                                                    {expense.withdrawal_status !== 'pending' && (
+                                                        <p className="text-muted-foreground text-xs">
+                                                            {t('withdrawal.remaining')}: {formatCurrency(remaining)} FCFA
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                {/* Amount with percentage */}
+                                                <div className="shrink-0 text-right">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm font-medium tabular-nums">
+                                                            {formatCurrency(expense.amount)}
+                                                        </span>
+                                                        <span className="text-muted-foreground text-xs">
+                                                            FCFA
+                                                        </span>
+                                                        <span className="text-muted-foreground text-xs tabular-nums">
+                                                            ({calculatePercentage(parseFloat(expense.amount), categoryTotal)}%)
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Actions */}
+                                                {!isLocked && (
+                                                    <div className="flex shrink-0 items-center">
+                                                        {hasRemainingAmount(expense) && (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    onWithdraw([expense.id]);
+                                                                }}
+                                                                className="text-green-600 hover:bg-green-500/10 active:bg-green-500/20 rounded-full p-2 transition-colors"
+                                                                aria-label={t('withdrawal.withdraw')}
+                                                            >
+                                                                <Banknote className="size-3.5" />
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                onEdit(expense);
+                                                            }}
+                                                            className="text-primary hover:bg-primary/10 active:bg-primary/20 rounded-full p-2 transition-colors"
+                                                            aria-label={t('common.edit')}
+                                                        >
+                                                            <Pencil className="size-3.5" />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDeleteClick(expense);
+                                                            }}
+                                                            className="text-destructive hover:bg-destructive/10 active:bg-destructive/20 rounded-full p-2 transition-colors"
+                                                            aria-label={t('common.delete')}
+                                                        >
+                                                            <Trash2 className="size-3.5" />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Withdrawal history */}
+                                            {hasWithdrawals && isExpanded && (
+                                                <WithdrawalList
+                                                    withdrawals={expense.withdrawals || []}
+                                                    isLocked={isLocked}
+                                                    className="mt-2 ml-6"
+                                                />
                                             )}
                                         </div>
-
-                                        {/* Amount with percentage */}
-                                        <div className="shrink-0 text-right">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-medium tabular-nums">
-                                                    {formatCurrency(expense.amount)}
-                                                </span>
-                                                <span className="text-muted-foreground text-xs">
-                                                    FCFA
-                                                </span>
-                                                <span className="text-muted-foreground text-xs tabular-nums">
-                                                    ({calculatePercentage(parseFloat(expense.amount), categoryTotal)}%)
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Actions */}
-                                        {!isLocked && (
-                                            <div className="flex shrink-0 items-center">
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        onEdit(expense);
-                                                    }}
-                                                    className="text-primary hover:bg-primary/10 active:bg-primary/20 -mr-1 rounded-full p-2 transition-colors"
-                                                    aria-label={t('common.edit')}
-                                                >
-                                                    <Pencil className="size-3.5" />
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDeleteClick(expense);
-                                                    }}
-                                                    className="text-destructive hover:bg-destructive/10 active:bg-destructive/20 rounded-full p-2 transition-colors"
-                                                    aria-label={t('common.delete')}
-                                                >
-                                                    <Trash2 className="size-3.5" />
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </CollapsibleContent>
                     </Collapsible>
                 );
             })}
+
+            {/* Batch withdrawal button */}
+            {!isLocked && selectedExpenses.length > 0 && (
+                <div className="bg-primary/10 border-primary/20 fixed bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-full border px-4 py-2 shadow-lg md:bottom-8">
+                    <button
+                        onClick={() => {
+                            onWithdraw(selectedExpenses);
+                            setSelectedExpenses([]);
+                        }}
+                        className="flex items-center gap-2 text-sm font-medium"
+                    >
+                        <Banknote className="size-4" />
+                        {t('withdrawal.withdrawSelected', { count: selectedExpenses.length })}
+                    </button>
+                </div>
+            )}
 
             <ConfirmDialog
                 open={deleteDialogOpen}

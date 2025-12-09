@@ -36,12 +36,18 @@ class ExpenseController extends Controller
         // Ensure system categories exist
         ExpenseCategory::createSystemCategories();
 
-        // Get expenses with category relationship
-        $expenses = Expense::with('category')
+        // Get expenses with category and withdrawals relationships
+        $expenses = Expense::with(['category', 'withdrawals'])
             ->where('user_id', $userId)
             ->where('month', $month)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($expense) {
+                $expense->withdrawn_amount = $expense->withdrawn_amount;
+                $expense->remaining_amount = $expense->remaining_amount;
+                $expense->withdrawal_status = $expense->withdrawal_status;
+                return $expense;
+            });
 
         // Get all available categories for user
         $categories = ExpenseCategory::forUser($userId);
@@ -51,6 +57,7 @@ class ExpenseController extends Controller
             ->map(fn($items) => $items->sum('amount'));
 
         $total = $expenses->sum('amount');
+        $totalWithdrawn = $expenses->sum('withdrawn_amount');
         $isLocked = MonthLock::isLocked($userId, $month);
 
         // Get total income for comparison
@@ -64,6 +71,7 @@ class ExpenseController extends Controller
             'totalsByCategory' => $totalsByCategory,
             'currentMonth' => $month,
             'total' => $total,
+            'totalWithdrawn' => $totalWithdrawn,
             'totalIncome' => $totalIncome,
             'isLocked' => $isLocked,
         ]);
