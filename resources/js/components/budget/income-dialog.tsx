@@ -1,3 +1,4 @@
+import { CalculatorInput } from '@/components/budget/calculator-input';
 import { Autocomplete } from '@/components/ui/autocomplete';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,7 +9,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { type Income, type IncomeFormData } from '@/types/budget';
 import { useForm } from '@inertiajs/react';
@@ -82,14 +82,6 @@ export function IncomeDialog({
         }
     };
 
-    /**
-     * Handles amount input change, allowing only numeric values.
-     */
-    const handleAmountChange = (value: string) => {
-        const numericValue = value.replace(/[^0-9.]/g, '');
-        setData('amount', numericValue);
-    };
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
@@ -120,20 +112,10 @@ export function IncomeDialog({
 
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="amount">{t('income.amount')}</Label>
-                        <div className="relative">
-                            <Input
-                                id="amount"
-                                type="text"
-                                inputMode="numeric"
-                                value={data.amount}
-                                onChange={(e) => handleAmountChange(e.target.value)}
-                                placeholder="0"
-                                className="pr-16"
-                            />
-                            <span className="text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2 text-sm">
-                                FCFA
-                            </span>
-                        </div>
+                        <CalculatorInput
+                            value={data.amount}
+                            onChange={(value) => setData('amount', value)}
+                        />
                         {errors.amount && (
                             <p className="text-destructive text-sm">{errors.amount}</p>
                         )}

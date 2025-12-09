@@ -1,4 +1,5 @@
 export { BudgetRuleCard } from './budget-rule-card';
+export { CalculatorInput } from './calculator-input';
 export { CurrencyInput } from './currency-input';
 export { DuplicateDialog } from './duplicate-dialog';
 export { EnvelopeCard } from './envelope-card';

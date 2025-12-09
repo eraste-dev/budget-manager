@@ -1,8 +1,9 @@
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { type Expense, type ExpenseCategory } from '@/types/budget';
 import { router } from '@inertiajs/react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -59,6 +60,17 @@ export function ExpenseList({
     const { t } = useTranslation();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null);
+    const [openCategories, setOpenCategories] = useState<Record<number, boolean>>({});
+
+    /**
+     * Toggle a category's open state.
+     */
+    const toggleCategory = (categoryId: number) => {
+        setOpenCategories((prev) => ({
+            ...prev,
+            [categoryId]: !prev[categoryId],
+        }));
+    };
 
     /**
      * Opens the delete confirmation dialog.
@@ -111,16 +123,32 @@ export function ExpenseList({
                     0
                 );
 
+                const isOpen = openCategories[category.id] ?? false;
+
                 return (
-                    <div key={category.id} className="space-y-2">
-                        {/* Category header */}
-                        <div className="flex items-center justify-between">
+                    <Collapsible
+                        key={category.id}
+                        open={isOpen}
+                        onOpenChange={() => toggleCategory(category.id)}
+                        className="rounded-lg border bg-card"
+                    >
+                        {/* Category header - clickable */}
+                        <CollapsibleTrigger className="flex w-full items-center justify-between p-3 hover:bg-muted/50 transition-colors">
                             <div className="flex items-center gap-2">
+                                <ChevronDown
+                                    className={cn(
+                                        'size-4 text-muted-foreground transition-transform duration-200',
+                                        isOpen && 'rotate-180'
+                                    )}
+                                />
                                 <div
                                     className="size-3 rounded-full"
                                     style={{ backgroundColor: category.color }}
                                 />
                                 <h3 className="text-sm font-semibold">{category.name}</h3>
+                                <span className="text-muted-foreground text-xs">
+                                    ({categoryExpenses.length})
+                                </span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className="text-muted-foreground text-xs tabular-nums">
@@ -130,58 +158,66 @@ export function ExpenseList({
                                     {calculatePercentage(categoryTotal, totalIncome)}%
                                 </span>
                             </div>
-                        </div>
+                        </CollapsibleTrigger>
 
                         {/* Expenses in this category */}
-                        <div className="divide-y rounded-lg border bg-card">
-                            {categoryExpenses.map((expense) => (
-                                <div
-                                    key={expense.id}
-                                    className="flex items-center justify-between gap-3 px-3 py-2.5"
-                                >
-                                    {/* Label */}
-                                    <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm">{expense.label}</p>
-                                    </div>
-
-                                    {/* Amount with percentage */}
-                                    <div className="shrink-0 text-right">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-medium tabular-nums">
-                                                {formatCurrency(expense.amount)}
-                                            </span>
-                                            <span className="text-muted-foreground text-xs">
-                                                FCFA
-                                            </span>
-                                            <span className="text-muted-foreground text-xs tabular-nums">
-                                                ({calculatePercentage(parseFloat(expense.amount), totalIncome)}%)
-                                            </span>
+                        <CollapsibleContent>
+                            <div className="divide-y border-t">
+                                {categoryExpenses.map((expense) => (
+                                    <div
+                                        key={expense.id}
+                                        className="flex items-center justify-between gap-3 px-3 py-2.5"
+                                    >
+                                        {/* Label */}
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate text-sm">{expense.label}</p>
                                         </div>
-                                    </div>
 
-                                    {/* Actions */}
-                                    {!isLocked && (
-                                        <div className="flex shrink-0 items-center">
-                                            <button
-                                                onClick={() => onEdit(expense)}
-                                                className="text-primary hover:bg-primary/10 active:bg-primary/20 -mr-1 rounded-full p-2 transition-colors"
-                                                aria-label={t('common.edit')}
-                                            >
-                                                <Pencil className="size-3.5" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteClick(expense)}
-                                                className="text-destructive hover:bg-destructive/10 active:bg-destructive/20 rounded-full p-2 transition-colors"
-                                                aria-label={t('common.delete')}
-                                            >
-                                                <Trash2 className="size-3.5" />
-                                            </button>
+                                        {/* Amount with percentage */}
+                                        <div className="shrink-0 text-right">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-medium tabular-nums">
+                                                    {formatCurrency(expense.amount)}
+                                                </span>
+                                                <span className="text-muted-foreground text-xs">
+                                                    FCFA
+                                                </span>
+                                                <span className="text-muted-foreground text-xs tabular-nums">
+                                                    ({calculatePercentage(parseFloat(expense.amount), categoryTotal)}%)
+                                                </span>
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+
+                                        {/* Actions */}
+                                        {!isLocked && (
+                                            <div className="flex shrink-0 items-center">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onEdit(expense);
+                                                    }}
+                                                    className="text-primary hover:bg-primary/10 active:bg-primary/20 -mr-1 rounded-full p-2 transition-colors"
+                                                    aria-label={t('common.edit')}
+                                                >
+                                                    <Pencil className="size-3.5" />
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteClick(expense);
+                                                    }}
+                                                    className="text-destructive hover:bg-destructive/10 active:bg-destructive/20 rounded-full p-2 transition-colors"
+                                                    aria-label={t('common.delete')}
+                                                >
+                                                    <Trash2 className="size-3.5" />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </CollapsibleContent>
+                    </Collapsible>
                 );
             })}
 

@@ -222,5 +222,11 @@
                 "Business"
             ]
         }
+    },
+    "calculator": {
+        "hint": "Saisissez une expression (ex: 6*6500, 20%*85000, 1000+500)",
+        "placeholder": "Ex: 6*6500",
+        "result": "Résultat",
+        "invalid": "Expression invalide"
     }
 }

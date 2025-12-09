@@ -1,7 +1,8 @@
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { type Expense, type ExpenseCategory } from '@/types/budget';
-import { AlertTriangle, CheckCircle2, Info } from 'lucide-react';
-import { useMemo } from 'react';
+import { AlertTriangle, CheckCircle2, ChevronDown, Info } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -48,6 +49,7 @@ export function BudgetRuleCard({
     className,
 }: BudgetRuleCardProps) {
     const { t } = useTranslation();
+    const [isOpen, setIsOpen] = useState(false);
 
     /**
      * Calculate totals by category slug for budget rule analysis.
@@ -178,114 +180,124 @@ export function BudgetRuleCard({
     const totalPercentage = (totalExpenses / totalIncome) * 100;
 
     return (
-        <div className={cn('rounded-lg border bg-card p-4', className)}>
-            <h3 className="mb-4 text-sm font-semibold">{t('budgetRule.title')}</h3>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen} className={cn('rounded-lg border bg-card', className)}>
+            <CollapsibleTrigger className="flex w-full items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-3">
+                    <h3 className="text-sm font-semibold">{t('budgetRule.title')}</h3>
+                    <span
+                        className={cn(
+                            'text-sm font-bold tabular-nums',
+                            totalPercentage > 100
+                                ? 'text-red-600 dark:text-red-400'
+                                : 'text-green-600 dark:text-green-400',
+                        )}
+                    >
+                        {totalPercentage.toFixed(1)}%
+                    </span>
+                </div>
+                <ChevronDown className={cn('size-4 text-muted-foreground transition-transform duration-200', isOpen && 'rotate-180')} />
+            </CollapsibleTrigger>
 
-            {/* Progress bars for each category */}
-            <div className="space-y-4">
-                {analysis.map((item) => (
-                    <div key={item.key} className="space-y-1.5">
-                        <div className="flex items-center justify-between text-xs">
-                            <span className="font-medium">{t(item.label)}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="text-muted-foreground">
-                                    {formatCurrency(item.spent)} / {formatCurrency(item.targetAmount)} FCFA
-                                </span>
-                                <span
-                                    className={cn(
-                                        'font-semibold tabular-nums',
-                                        item.isWarning
-                                            ? 'text-red-600 dark:text-red-400'
-                                            : item.isOver
-                                              ? 'text-amber-600 dark:text-amber-400'
-                                              : 'text-green-600 dark:text-green-400'
+            <CollapsibleContent>
+                <div className="border-t px-4 pb-4">
+                    {/* Progress bars for each category */}
+                    <div className="space-y-4 pt-4">
+                        {analysis.map((item) => (
+                            <div key={item.key} className="space-y-1.5">
+                                <div className="flex items-center justify-between text-xs">
+                                    <span className="font-medium">{t(item.label)}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-muted-foreground">
+                                            {formatCurrency(item.spent)} / {formatCurrency(item.targetAmount)} FCFA
+                                        </span>
+                                        <span
+                                            className={cn(
+                                                'font-semibold tabular-nums',
+                                                item.isWarning
+                                                    ? 'text-red-600 dark:text-red-400'
+                                                    : item.isOver
+                                                      ? 'text-amber-600 dark:text-amber-400'
+                                                      : 'text-green-600 dark:text-green-400',
+                                            )}
+                                        >
+                                            {item.percentage.toFixed(1)}%
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Progress bar */}
+                                <div className="relative h-2 overflow-hidden rounded-full bg-muted">
+                                    {/* Target marker */}
+                                    <div className="absolute top-0 bottom-0 z-10 w-0.5 bg-foreground/30" style={{ left: `${Math.min(item.target, 100)}%` }} />
+                                    {/* Progress */}
+                                    <div
+                                        className={cn(
+                                            'h-full rounded-full transition-all duration-500',
+                                            item.isWarning ? 'bg-red-500' : item.isOver ? 'bg-amber-500' : 'bg-green-500',
+                                        )}
+                                        style={{
+                                            width: `${Math.min(item.percentage, 100)}%`,
+                                            backgroundColor: !item.isWarning && !item.isOver ? item.color : undefined,
+                                        }}
+                                    />
+                                </div>
+
+                                {/* Target label */}
+                                <div className="flex justify-between text-[10px] text-muted-foreground">
+                                    <span>
+                                        {t('budgetRule.target')}: {item.target}%
+                                    </span>
+                                    {item.remaining > 0 ? (
+                                        <span className="text-green-600 dark:text-green-400">
+                                            {t('budgetRule.remaining')}: {formatCurrency(item.remaining)} FCFA
+                                        </span>
+                                    ) : (
+                                        <span className="text-red-600 dark:text-red-400">
+                                            {t('budgetRule.exceeded')}: {formatCurrency(Math.abs(item.remaining))} FCFA
+                                        </span>
                                     )}
-                                >
-                                    {item.percentage.toFixed(1)}%
-                                </span>
+                                </div>
                             </div>
-                        </div>
-
-                        {/* Progress bar */}
-                        <div className="relative h-2 overflow-hidden rounded-full bg-muted">
-                            {/* Target marker */}
-                            <div
-                                className="absolute top-0 bottom-0 w-0.5 bg-foreground/30 z-10"
-                                style={{ left: `${Math.min(item.target, 100)}%` }}
-                            />
-                            {/* Progress */}
-                            <div
-                                className={cn(
-                                    'h-full rounded-full transition-all duration-500',
-                                    item.isWarning
-                                        ? 'bg-red-500'
-                                        : item.isOver
-                                          ? 'bg-amber-500'
-                                          : 'bg-green-500'
-                                )}
-                                style={{
-                                    width: `${Math.min(item.percentage, 100)}%`,
-                                    backgroundColor: !item.isWarning && !item.isOver ? item.color : undefined,
-                                }}
-                            />
-                        </div>
-
-                        {/* Target label */}
-                        <div className="flex justify-between text-[10px] text-muted-foreground">
-                            <span>{t('budgetRule.target')}: {item.target}%</span>
-                            {item.remaining > 0 ? (
-                                <span className="text-green-600 dark:text-green-400">
-                                    {t('budgetRule.remaining')}: {formatCurrency(item.remaining)} FCFA
-                                </span>
-                            ) : (
-                                <span className="text-red-600 dark:text-red-400">
-                                    {t('budgetRule.exceeded')}: {formatCurrency(Math.abs(item.remaining))} FCFA
-                                </span>
-                            )}
-                        </div>
+                        ))}
                     </div>
-                ))}
-            </div>
 
-            {/* Total usage */}
-            <div className="mt-4 flex items-center justify-between border-t pt-3">
-                <span className="text-sm font-medium">{t('budgetRule.totalUsage')}</span>
-                <span
-                    className={cn(
-                        'text-lg font-bold tabular-nums',
-                        totalPercentage > 100
-                            ? 'text-red-600 dark:text-red-400'
-                            : 'text-green-600 dark:text-green-400'
-                    )}
-                >
-                    {totalPercentage.toFixed(1)}%
-                </span>
-            </div>
-
-            {/* Observations */}
-            {observations.length > 0 && (
-                <div className="mt-4 space-y-2 border-t pt-3">
-                    <h4 className="text-xs font-semibold text-muted-foreground uppercase">
-                        {t('budgetRule.observations')}
-                    </h4>
-                    {observations.map((obs, index) => (
-                        <div
-                            key={index}
+                    {/* Total usage */}
+                    <div className="mt-4 flex items-center justify-between border-t pt-3">
+                        <span className="text-sm font-medium">{t('budgetRule.totalUsage')}</span>
+                        <span
                             className={cn(
-                                'flex items-start gap-2 rounded-md px-3 py-2 text-xs',
-                                obs.type === 'warning' && 'bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-200',
-                                obs.type === 'info' && 'bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200',
-                                obs.type === 'success' && 'bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200'
+                                'text-lg font-bold tabular-nums',
+                                totalPercentage > 100 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400',
                             )}
                         >
-                            {obs.type === 'warning' && <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />}
-                            {obs.type === 'info' && <Info className="mt-0.5 size-3.5 shrink-0" />}
-                            {obs.type === 'success' && <CheckCircle2 className="mt-0.5 size-3.5 shrink-0" />}
-                            <span>{obs.message}</span>
+                            {totalPercentage.toFixed(1)}%
+                        </span>
+                    </div>
+
+                    {/* Observations */}
+                    {observations.length > 0 && (
+                        <div className="mt-4 space-y-2 border-t pt-3">
+                            <h4 className="text-muted-foreground text-xs font-semibold uppercase">{t('budgetRule.observations')}</h4>
+                            {observations.map((obs, index) => (
+                                <div
+                                    key={index}
+                                    className={cn(
+                                        'flex items-start gap-2 rounded-md px-3 py-2 text-xs',
+                                        obs.type === 'warning' && 'bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-200',
+                                        obs.type === 'info' && 'bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200',
+                                        obs.type === 'success' && 'bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200',
+                                    )}
+                                >
+                                    {obs.type === 'warning' && <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />}
+                                    {obs.type === 'info' && <Info className="mt-0.5 size-3.5 shrink-0" />}
+                                    {obs.type === 'success' && <CheckCircle2 className="mt-0.5 size-3.5 shrink-0" />}
+                                    <span>{obs.message}</span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    )}
                 </div>
-            )}
-        </div>
+            </CollapsibleContent>
+        </Collapsible>
     );
 }
